@@ -44,7 +44,33 @@ export function loadDrafts(): DraftPost[] {
 }
 
 export function saveDrafts(drafts: DraftPost[]) {
-  localStorage.setItem(DRAFTS_KEY, JSON.stringify(drafts));
+  try {
+    localStorage.setItem(DRAFTS_KEY, JSON.stringify(drafts));
+  } catch {
+    // localStorage full — remove oldest drafts until it fits
+    const trimmed = [...drafts];
+    while (trimmed.length > 0) {
+      trimmed.pop();
+      try { localStorage.setItem(DRAFTS_KEY, JSON.stringify(trimmed)); return; } catch { /* keep trimming */ }
+    }
+  }
+}
+
+function compressImage(dataUrl: string, maxSize: number = 600): Promise<string> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = maxSize;
+      canvas.height = maxSize;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) { resolve(dataUrl); return; }
+      ctx.drawImage(img, 0, 0, maxSize, maxSize);
+      resolve(canvas.toDataURL("image/jpeg", 0.7));
+    };
+    img.onerror = () => resolve(dataUrl);
+    img.src = dataUrl;
+  });
 }
 
 const EDIT_STYLES = [
@@ -116,18 +142,22 @@ export default function AIPostCreator({ open, onClose, onSaveDraft, onSchedule }
     } catch { setPhotosLoaded(true); }
   };
 
-  const buildDraft = (): DraftPost => ({
-    id: `draft-${Date.now()}`,
-    title: postData.title || prompt.substring(0, 50),
-    caption: postData.caption || "",
-    hashtags: postData.hashtags || "",
-    headline: postData.headline || "",
-    image: editedImage,
-    platform,
-    editStyle,
-    createdAt: new Date().toISOString(),
-    scheduledDate: scheduleDate && scheduleTime ? new Date(`${scheduleDate}T${scheduleTime}`).toISOString() : undefined,
-  });
+  const buildDraft = async (): Promise<DraftPost> => {
+    // Compress image to ~600px JPEG to fit in localStorage
+    const compressedImage = editedImage.startsWith("data:") ? await compressImage(editedImage) : editedImage;
+    return {
+      id: `draft-${Date.now()}`,
+      title: postData.title || prompt.substring(0, 50),
+      caption: postData.caption || "",
+      hashtags: postData.hashtags || "",
+      headline: postData.headline || "",
+      image: compressedImage,
+      platform,
+      editStyle,
+      createdAt: new Date().toISOString(),
+      scheduledDate: scheduleDate && scheduleTime ? new Date(`${scheduleDate}T${scheduleTime}`).toISOString() : undefined,
+    };
+  };
 
   // ── Generate ──
   const generate = async () => {
@@ -190,18 +220,26 @@ export default function AIPostCreator({ open, onClose, onSaveDraft, onSchedule }
   };
 
   // ── Save actions ──
-  const handleSaveDraft = () => {
-    const draft = buildDraft();
-    onSaveDraft(draft);
-    onClose();
+  const handleSaveDraft = async () => {
+    try {
+      const draft = await buildDraft();
+      onSaveDraft(draft);
+      onClose();
+    } catch {
+      setError("Error guardando borrador");
+    }
   };
 
-  const handleSchedule = () => {
+  const handleSchedule = async () => {
     if (!scheduleDate) { setError("Selecciona una fecha"); return; }
-    const draft = buildDraft();
-    draft.scheduledDate = new Date(`${scheduleDate}T${scheduleTime}`).toISOString();
-    onSchedule(draft);
-    onClose();
+    try {
+      const draft = await buildDraft();
+      draft.scheduledDate = new Date(`${scheduleDate}T${scheduleTime}`).toISOString();
+      onSchedule(draft);
+      onClose();
+    } catch {
+      setError("Error programando post");
+    }
   };
 
   if (!open) return null;
