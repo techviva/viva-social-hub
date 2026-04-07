@@ -3,8 +3,11 @@
 import { useState, useEffect } from "react";
 import {
   SparklesIcon, XIcon, InstagramIcon, TikTokIcon, YouTubeIcon,
+  CalendarIcon, ScriptIcon,
 } from "./Icons";
 import type { Platform } from "@/data/posts";
+
+/* ── Types ── */
 
 interface DrivePhoto {
   id: string;
@@ -13,9 +16,35 @@ interface DrivePhoto {
   previewUrl: string;
 }
 
+export interface DraftPost {
+  id: string;
+  title: string;
+  caption: string;
+  hashtags: string;
+  headline: string;
+  image: string;
+  platform: Platform;
+  editStyle: string;
+  createdAt: string;
+  scheduledDate?: string;
+}
+
 interface AIPostCreatorProps {
   open: boolean;
   onClose: () => void;
+  onSaveDraft: (draft: DraftPost) => void;
+  onSchedule: (draft: DraftPost) => void;
+}
+
+const DRAFTS_KEY = "viva-social-hub-drafts";
+
+export function loadDrafts(): DraftPost[] {
+  if (typeof window === "undefined") return [];
+  try { return JSON.parse(localStorage.getItem(DRAFTS_KEY) || "[]"); } catch { return []; }
+}
+
+export function saveDrafts(drafts: DraftPost[]) {
+  localStorage.setItem(DRAFTS_KEY, JSON.stringify(drafts));
 }
 
 const EDIT_STYLES = [
@@ -33,9 +62,9 @@ function PlatformIconSmall({ platform }: { platform: Platform }) {
   return <YouTubeIcon className="w-3.5 h-3.5" />;
 }
 
-type Step = "config" | "working" | "result";
+type Step = "config" | "working" | "result" | "save";
 
-export default function AIPostCreator({ open, onClose }: AIPostCreatorProps) {
+export default function AIPostCreator({ open, onClose, onSaveDraft, onSchedule }: AIPostCreatorProps) {
   const [step, setStep] = useState<Step>("config");
   const [prompt, setPrompt] = useState("");
   const [platform, setPlatform] = useState<Platform>("instagram");
@@ -45,16 +74,18 @@ export default function AIPostCreator({ open, onClose }: AIPostCreatorProps) {
   const [dots, setDots] = useState("");
   const [statusMsg, setStatusMsg] = useState("");
 
-  // Photo choosing (only in "choose" mode)
   const [photoOptions, setPhotoOptions] = useState<DrivePhoto[]>([]);
   const [selectedPhoto, setSelectedPhoto] = useState<DrivePhoto | null>(null);
   const [photosLoaded, setPhotosLoaded] = useState(false);
 
-  // Result
   const [postData, setPostData] = useState<Record<string, string>>({});
   const [editedImage, setEditedImage] = useState("");
   const [isReEditing, setIsReEditing] = useState(false);
   const [reEditPrompt, setReEditPrompt] = useState("");
+
+  // Schedule form
+  const [scheduleDate, setScheduleDate] = useState("");
+  const [scheduleTime, setScheduleTime] = useState("12:00");
 
   useEffect(() => {
     if (step !== "working" && !isReEditing) return;
@@ -68,39 +99,42 @@ export default function AIPostCreator({ open, onClose }: AIPostCreatorProps) {
       setPhotoOptions([]); setSelectedPhoto(null); setPhotosLoaded(false);
       setEditedImage(""); setReEditPrompt(""); setStatusMsg("");
       setPhotoMode("auto"); setEditStyle("gradient-overlay");
+      setScheduleDate(""); setScheduleTime("12:00");
     }
   }, [open]);
 
-  // Load photo options when user switches to "choose" mode
   const loadPhotoOptions = async (category?: string) => {
     setPhotosLoaded(false);
     try {
-      const cat = category || "best-of-viva";
-      const res = await fetch(`/api/drive-photos?limit=6&category=${cat}`);
+      const res = await fetch(`/api/drive-photos?limit=6&category=${category || "best-of-viva"}`);
       const data = await res.json();
-      if (data.photos?.length) {
-        setPhotoOptions(data.photos);
-        setSelectedPhoto(data.photos[0]);
-      }
+      if (data.photos?.length) { setPhotoOptions(data.photos); setSelectedPhoto(data.photos[0]); }
       setPhotosLoaded(true);
     } catch { setPhotosLoaded(true); }
   };
 
-  // ── Main generation flow ──
+  const buildDraft = (): DraftPost => ({
+    id: `draft-${Date.now()}`,
+    title: postData.title || prompt.substring(0, 50),
+    caption: postData.caption || "",
+    hashtags: postData.hashtags || "",
+    headline: postData.headline || "",
+    image: editedImage,
+    platform,
+    editStyle,
+    createdAt: new Date().toISOString(),
+    scheduledDate: scheduleDate && scheduleTime ? new Date(`${scheduleDate}T${scheduleTime}`).toISOString() : undefined,
+  });
+
+  // ── Generate ──
   const generate = async () => {
     if (!prompt.trim()) return;
-
-    // In "choose" mode, must have selected a photo first
-    if (photoMode === "choose" && !selectedPhoto) {
-      setError("Selecciona una foto primero");
-      return;
-    }
+    if (photoMode === "choose" && !selectedPhoto) { setError("Selecciona una foto"); return; }
 
     setStep("working"); setError("");
 
     try {
-      // Step 1: Generate post copy with Claude
-      setStatusMsg("Generando copy con AI...");
+      setStatusMsg("Generando copy con Claude...");
       const postRes = await fetch("/api/generate-post", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -110,23 +144,19 @@ export default function AIPostCreator({ open, onClose }: AIPostCreatorProps) {
       if (!postRes.ok) { setError(postJson.error || "Error generando copy"); setStep("config"); return; }
       setPostData(postJson.post);
 
-      // Step 2: Get photo from Drive
       let photoUrl = "";
       if (photoMode === "choose" && selectedPhoto) {
         photoUrl = selectedPhoto.previewUrl;
       } else {
-        setStatusMsg("Buscando foto en Drive...");
+        setStatusMsg("Seleccionando foto de Drive...");
         const category = postJson.post.driveCategory || "best-of-viva";
         const driveRes = await fetch(`/api/drive-photos?limit=3&category=${category}`);
         const driveJson = await driveRes.json();
         if (driveJson.photos?.length) {
-          // Pick random from top 3
-          const idx = Math.floor(Math.random() * Math.min(3, driveJson.photos.length));
-          photoUrl = driveJson.photos[idx].previewUrl;
+          photoUrl = driveJson.photos[Math.floor(Math.random() * Math.min(3, driveJson.photos.length))].previewUrl;
         }
       }
 
-      // Step 3: Edit image with Gemini
       setStatusMsg("Editando imagen con Gemini...");
       const editRes = await fetch("/api/edit-image", {
         method: "POST",
@@ -140,52 +170,41 @@ export default function AIPostCreator({ open, onClose }: AIPostCreatorProps) {
         }),
       });
       const editJson = await editRes.json();
-      if (editJson.image) {
-        setEditedImage(editJson.image);
-        setStep("result");
-      } else {
-        setError(editJson.error || "Error editando imagen");
-        setStep("config");
-      }
-    } catch {
-      setError("Error de conexion. Intenta de nuevo.");
-      setStep("config");
-    }
+      if (editJson.image) { setEditedImage(editJson.image); setStep("result"); }
+      else { setError(editJson.error || "Error editando imagen"); setStep("config"); }
+    } catch { setError("Error de conexion"); setStep("config"); }
   };
 
   // ── Re-edit ──
   const reEdit = async (styleOverride?: string, customPrompt?: string) => {
     setIsReEditing(true); setError("");
     const body: Record<string, string> = {};
-
-    if (customPrompt) {
-      body.prompt = customPrompt;
-    } else {
-      body.style = styleOverride || editStyle;
-      body.headline = postData.headline || "";
-      body.subline = postData.subline || "";
-      body.cta = postData.ctaText || "";
-    }
-
-    // Use the current edited image as reference for re-edits
+    if (customPrompt) { body.prompt = customPrompt; }
+    else { body.style = styleOverride || editStyle; body.headline = postData.headline || ""; body.subline = postData.subline || ""; body.cta = postData.ctaText || ""; }
     if (editedImage) body.imageUrl = editedImage;
 
     try {
-      const res = await fetch("/api/edit-image", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
+      const res = await fetch("/api/edit-image", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
       const data = await res.json();
-      if (data.image) {
-        setEditedImage(data.image);
-        if (styleOverride) setEditStyle(styleOverride);
-      } else {
-        setError(data.error || "Error re-editando");
-      }
+      if (data.image) { setEditedImage(data.image); if (styleOverride) setEditStyle(styleOverride); }
+      else setError(data.error || "Error re-editando");
     } catch { setError("Error de conexion"); }
-    setIsReEditing(false);
-    setReEditPrompt("");
+    setIsReEditing(false); setReEditPrompt("");
+  };
+
+  // ── Save actions ──
+  const handleSaveDraft = () => {
+    const draft = buildDraft();
+    onSaveDraft(draft);
+    onClose();
+  };
+
+  const handleSchedule = () => {
+    if (!scheduleDate) { setError("Selecciona una fecha"); return; }
+    const draft = buildDraft();
+    draft.scheduledDate = new Date(`${scheduleDate}T${scheduleTime}`).toISOString();
+    onSchedule(draft);
+    onClose();
   };
 
   if (!open) return null;
@@ -202,27 +221,21 @@ export default function AIPostCreator({ open, onClose }: AIPostCreatorProps) {
             <div className="p-1.5 rounded-lg bg-[var(--gold-primary)]/10"><SparklesIcon className="w-5 h-5 text-[var(--gold-light)]" /></div>
             <h3 className="text-sm font-bold text-[var(--text-primary)]">Crear con AI</h3>
           </div>
-          <button onClick={onClose} className="p-2 rounded-lg hover:bg-[var(--bg-card)] text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-all">
-            <XIcon className="w-5 h-5" />
-          </button>
+          <button onClick={onClose} className="p-2 rounded-lg hover:bg-[var(--bg-card)] text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-all"><XIcon className="w-5 h-5" /></button>
         </div>
 
         <div className="p-5 space-y-4">
           {error && <p className="text-xs text-red-400 bg-red-400/10 px-3 py-2 rounded-lg">{error}</p>}
 
-          {/* ═══ CONFIG STEP ═══ */}
+          {/* ═══ CONFIG ═══ */}
           {step === "config" && (
             <>
-              {/* Prompt */}
               <div>
                 <label className="text-[11px] uppercase tracking-wider text-[var(--text-muted)] mb-1.5 block font-semibold">Describe tu post</label>
-                <textarea value={prompt} onChange={(e) => setPrompt(e.target.value)}
-                  placeholder='Ej: "Before & after de pavers travertino en Scottsdale" o "Promo spring 15% off turf"'
-                  rows={3}
+                <textarea value={prompt} onChange={(e) => setPrompt(e.target.value)} placeholder='Ej: "Before & after de pavers travertino" o "Promo spring 15% off turf"' rows={3}
                   className="w-full px-4 py-3 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--gold-primary)] focus:ring-1 focus:ring-[var(--gold-primary)]/30 transition-all resize-none" />
               </div>
 
-              {/* Platform */}
               <div>
                 <label className="text-[11px] uppercase tracking-wider text-[var(--text-muted)] mb-1.5 block font-semibold">Plataforma</label>
                 <div className="flex gap-1.5">
@@ -235,7 +248,6 @@ export default function AIPostCreator({ open, onClose }: AIPostCreatorProps) {
                 </div>
               </div>
 
-              {/* Edit Style */}
               <div>
                 <label className="text-[11px] uppercase tracking-wider text-[var(--text-muted)] mb-1.5 block font-semibold">Estilo visual</label>
                 <div className="grid grid-cols-3 gap-2">
@@ -249,7 +261,6 @@ export default function AIPostCreator({ open, onClose }: AIPostCreatorProps) {
                 </div>
               </div>
 
-              {/* Photo Mode */}
               <div>
                 <label className="text-[11px] uppercase tracking-wider text-[var(--text-muted)] mb-1.5 block font-semibold">Foto</label>
                 <div className="flex gap-2 mb-2">
@@ -262,17 +273,11 @@ export default function AIPostCreator({ open, onClose }: AIPostCreatorProps) {
                     Elegir foto
                   </button>
                 </div>
-
-                {photoMode === "auto" && (
-                  <p className="text-[10px] text-[var(--text-muted)] bg-[var(--bg-primary)]/50 px-3 py-2 rounded-lg">AI seleccionara la mejor foto de tu Viva Media Library segun el tema</p>
-                )}
-
+                {photoMode === "auto" && <p className="text-[10px] text-[var(--text-muted)] bg-[var(--bg-primary)]/50 px-3 py-2 rounded-lg">AI seleccionara la mejor foto de tu Viva Media Library</p>}
                 {photoMode === "choose" && (
                   <div className="space-y-2">
                     {!photosLoaded ? (
                       <div className="flex items-center justify-center py-6"><span className="w-5 h-5 border-2 border-[var(--gold-primary)]/30 border-t-[var(--gold-primary)] rounded-full animate-spin" /></div>
-                    ) : photoOptions.length === 0 ? (
-                      <p className="text-[10px] text-[var(--text-muted)] text-center py-4">No se encontraron fotos</p>
                     ) : (
                       <div className="grid grid-cols-3 gap-2">
                         {photoOptions.slice(0, 6).map((photo) => (
@@ -295,7 +300,6 @@ export default function AIPostCreator({ open, onClose }: AIPostCreatorProps) {
                 )}
               </div>
 
-              {/* Generate */}
               <button onClick={generate} disabled={!prompt.trim() || (photoMode === "choose" && !selectedPhoto)}
                 className="w-full py-3 rounded-xl bg-gradient-to-r from-[var(--gold-dark)] to-[var(--gold-primary)] text-[var(--bg-primary)] font-bold text-sm disabled:opacity-40 hover:shadow-lg hover:shadow-[var(--gold-primary)]/25 transition-all active:scale-[0.98]">
                 <SparklesIcon className="w-4 h-4 inline mr-2" />Generar Post Completo
@@ -312,9 +316,9 @@ export default function AIPostCreator({ open, onClose }: AIPostCreatorProps) {
               </div>
               <p className="text-sm text-[var(--text-primary)] font-semibold">{statusMsg}{dots}</p>
               <div className="flex items-center gap-4 text-[10px] text-[var(--text-muted)]">
-                <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-[var(--gold-primary)]" />Claude: Copy</span>
-                <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-[#22c55e]" />Drive: Foto</span>
-                <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-[#3b82f6]" />Gemini: Edicion</span>
+                <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-[var(--gold-primary)]" />Claude</span>
+                <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-[#22c55e]" />Drive</span>
+                <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-[#3b82f6]" />Gemini</span>
               </div>
             </div>
           )}
@@ -322,8 +326,7 @@ export default function AIPostCreator({ open, onClose }: AIPostCreatorProps) {
           {/* ═══ RESULT ═══ */}
           {step === "result" && (
             <>
-              {/* Edited image */}
-              <div className="rounded-2xl overflow-hidden border border-[var(--border-gold)] shadow-lg shadow-[var(--gold-primary)]/10">
+              <div className="rounded-2xl overflow-hidden border border-[var(--border-gold)] shadow-lg shadow-[var(--gold-primary)]/10 relative">
                 {isReEditing && (
                   <div className="absolute inset-0 z-10 bg-black/50 flex items-center justify-center rounded-2xl">
                     <span className="w-8 h-8 border-3 border-white/30 border-t-white rounded-full animate-spin" />
@@ -332,19 +335,18 @@ export default function AIPostCreator({ open, onClose }: AIPostCreatorProps) {
                 <img src={editedImage} alt="Post editado" className="w-full aspect-square object-cover" />
               </div>
 
-              {/* Caption */}
               <div className="rounded-xl border border-[var(--border-color)] bg-[var(--bg-primary)]/50 p-3 space-y-1.5">
                 <p className="text-[10px] uppercase tracking-wider text-[var(--gold-light)] font-semibold">Caption</p>
-                <p className="text-xs text-[var(--text-primary)] whitespace-pre-line leading-relaxed max-h-32 overflow-y-auto">{postData.caption}</p>
+                <p className="text-xs text-[var(--text-primary)] whitespace-pre-line leading-relaxed max-h-28 overflow-y-auto">{postData.caption}</p>
                 <p className="text-[10px] text-[var(--text-muted)]">{postData.hashtags}</p>
               </div>
 
-              {/* Re-edit section */}
+              {/* Re-edit */}
               <div className="rounded-xl border border-[var(--border-color)] bg-[var(--bg-primary)]/30 p-3 space-y-2">
                 <p className="text-[10px] uppercase tracking-wider text-[var(--text-muted)] font-semibold">Ajustar imagen</p>
                 <div className="flex gap-1.5">
                   <input type="text" value={reEditPrompt} onChange={(e) => setReEditPrompt(e.target.value)}
-                    placeholder="Ej: more contrast, warmer tones, bigger text..."
+                    placeholder="Ej: more contrast, warmer, bigger text..."
                     onKeyDown={(e) => e.key === "Enter" && reEditPrompt.trim() && reEdit(undefined, reEditPrompt.trim())}
                     className="flex-1 px-3 py-2 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-color)] text-[11px] text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--gold-primary)]" />
                   <button onClick={() => reEdit(undefined, reEditPrompt.trim())} disabled={!reEditPrompt.trim() || isReEditing}
@@ -362,18 +364,58 @@ export default function AIPostCreator({ open, onClose }: AIPostCreatorProps) {
                 </div>
               </div>
 
-              {/* Actions */}
+              {/* Save actions */}
               <div className="flex gap-2">
-                <button onClick={() => { setStep("config"); setEditedImage(""); }}
-                  className="flex-1 py-2.5 rounded-xl border border-[var(--border-color)] text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-all">
-                  Empezar de nuevo
+                <button onClick={handleSaveDraft}
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-[var(--border-color)] text-sm text-[var(--text-muted)] hover:text-[var(--gold-light)] hover:border-[var(--border-gold)] transition-all">
+                  <ScriptIcon className="w-4 h-4" />Guardar Borrador
                 </button>
-                <button onClick={onClose}
-                  className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-[var(--gold-dark)] to-[var(--gold-primary)] text-[var(--bg-primary)] font-semibold text-sm transition-all active:scale-[0.98]">
-                  Listo
+                <button onClick={() => setStep("save")}
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-gradient-to-r from-[var(--gold-dark)] to-[var(--gold-primary)] text-[var(--bg-primary)] font-semibold text-sm transition-all active:scale-[0.98]">
+                  <CalendarIcon className="w-4 h-4" />Programar
                 </button>
               </div>
+              <button onClick={() => { setStep("config"); setEditedImage(""); }}
+                className="w-full py-2 rounded-xl text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-all">
+                Empezar de nuevo
+              </button>
             </>
+          )}
+
+          {/* ═══ SCHEDULE ═══ */}
+          {step === "save" && (
+            <div className="space-y-4 animate-fade-up">
+              <div className="flex items-center gap-3 mb-2">
+                <img src={editedImage} alt="" className="w-16 h-16 rounded-xl object-cover border border-[var(--border-gold)]" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-[var(--text-primary)] truncate">{postData.title || postData.headline}</p>
+                  <p className="text-xs text-[var(--text-muted)] truncate">{postData.caption?.substring(0, 60)}...</p>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-[11px] uppercase tracking-wider text-[var(--text-muted)] mb-1.5 block font-semibold">Fecha</label>
+                <input type="date" value={scheduleDate} onChange={(e) => setScheduleDate(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--gold-primary)] [color-scheme:dark]" />
+              </div>
+
+              <div>
+                <label className="text-[11px] uppercase tracking-wider text-[var(--text-muted)] mb-1.5 block font-semibold">Hora</label>
+                <input type="time" value={scheduleTime} onChange={(e) => setScheduleTime(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--gold-primary)] [color-scheme:dark]" />
+              </div>
+
+              <div className="flex gap-2">
+                <button onClick={() => setStep("result")}
+                  className="flex-1 py-2.5 rounded-xl border border-[var(--border-color)] text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-all">
+                  Atras
+                </button>
+                <button onClick={handleSchedule} disabled={!scheduleDate}
+                  className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-[var(--gold-dark)] to-[var(--gold-primary)] text-[var(--bg-primary)] font-semibold text-sm disabled:opacity-40 transition-all active:scale-[0.98]">
+                  <CalendarIcon className="w-4 h-4 inline mr-1.5" />Programar Post
+                </button>
+              </div>
+            </div>
           )}
         </div>
       </div>

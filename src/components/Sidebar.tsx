@@ -1,8 +1,8 @@
 "use client";
 
-import { HomeIcon, CalendarIcon, LightbulbIcon, BarChartIcon, ScriptIcon, LayoutIcon } from "./Icons";
+import { HomeIcon, CalendarIcon, LightbulbIcon, BarChartIcon, ScriptIcon, LayoutIcon, EditIcon } from "./Icons";
 
-export type Section = "panel" | "calendario" | "ideas" | "guiones" | "carruseles" | "metricas";
+export type Section = "panel" | "calendario" | "borradores" | "ideas" | "guiones" | "carruseles" | "metricas";
 
 interface SidebarProps {
   active: Section;
@@ -12,6 +12,7 @@ interface SidebarProps {
 const navItems: { key: Section; label: string; icon: React.ReactNode }[] = [
   { key: "panel", label: "Panel", icon: <HomeIcon className="w-5 h-5" /> },
   { key: "calendario", label: "Calendario", icon: <CalendarIcon className="w-5 h-5" /> },
+  { key: "borradores", label: "Borradores", icon: <EditIcon className="w-5 h-5" /> },
   { key: "ideas", label: "Ideas", icon: <LightbulbIcon className="w-5 h-5" /> },
   { key: "guiones", label: "Guiones", icon: <ScriptIcon className="w-5 h-5" /> },
   { key: "carruseles", label: "Carruseles", icon: <LayoutIcon className="w-5 h-5" /> },
