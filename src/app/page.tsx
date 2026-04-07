@@ -7,6 +7,7 @@ import DashboardPanel from "@/components/DashboardPanel";
 import CalendarPanel from "@/components/CalendarPanel";
 import IdeasPanel from "@/components/IdeasPanel";
 import ScriptsPanel from "@/components/ScriptsPanel";
+import CarouselPanel from "@/components/CarouselPanel";
 import MetricsPanel from "@/components/MetricsPanel";
 import type { Section } from "@/components/Sidebar";
 
@@ -27,6 +28,7 @@ export default function Home() {
             {isCalendar && <CalendarPanel />}
             {activeSection === "ideas" && <IdeasPanel />}
             {activeSection === "guiones" && <ScriptsPanel />}
+            {activeSection === "carruseles" && <CarouselPanel />}
             {activeSection === "metricas" && <MetricsPanel />}
           </div>
         </main>
