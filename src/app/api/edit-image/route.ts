@@ -2,143 +2,96 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const maxDuration = 60;
 
-/* ══════════════════════════════════════════════════════════
-   PREMIUM EDIT PROMPTS — Agency-grade social media design
-   ══════════════════════════════════════════════════════════ */
-
-const TEXT_RULES = `
-
-CRITICAL TEXT RULES (follow these exactly):
-- ALL text must be FULLY VISIBLE — no text may touch or extend beyond any edge of the image
-- Keep a MINIMUM 80px safe margin from all four edges
-- Text must NEVER be cut off, cropped, or clipped
-- Use SHORT text only — if the headline is long, break it into 2 lines max
-- Font size: headline max 60pt equivalent, subline max 28pt, CTA max 22pt
-- Every letter of every word must be completely legible and within the frame
-- Double-check: scroll your attention to each edge — if ANY text is near an edge, move it inward
-- If text won't fit, make the font smaller — NEVER let it overflow`;
+/* ══════════════════════════════════════════════════════════════
+   GEMINI EDIT PROMPTS — Visual-only editing (NO text rendering)
+   Text overlays are handled client-side with CSS for perfection.
+   Gemini only does: color grading, lighting, effects, graphics.
+   ══════════════════════════════════════════════════════════════ */
 
 const PREMIUM_STYLES: Record<string, string> = {
-  "gradient-overlay": `Transform this landscaping photo into a premium social media post with these EXACT specifications:
+  "gradient-overlay": `Edit this landscaping photo with premium visual treatment:
 
-PHOTO TREATMENT:
-- Cinematic color grade: warm golden highlights (shift toward #f0d078), deep rich shadows, subtle teal (#2a6a6a) in midtones
-- Increase contrast slightly, add gentle vignette darkening corners
-- Boost green vegetation saturation by 15%
+PHOTO EDITING (apply ALL of these):
+1. CINEMATIC COLOR GRADE: Push highlights toward warm gold (#f0d078), deepen shadows to rich dark teal, add slight orange/teal split toning
+2. CONTRAST: Increase by ~15%, add gentle S-curve for punchy look
+3. VIGNETTE: Subtle darkening at corners (20% opacity)
+4. GRADIENT OVERLAY: Add a smooth dark gradient from bottom — starts transparent at 50% height, reaches 75% black opacity at bottom edge
+5. SHARPNESS: Increase clarity and micro-contrast for crisp details
+6. GREEN BOOST: Saturate vegetation/grass greens by ~20%
+7. GOLDEN LIGHT: Add subtle warm glow to any sky or light sources
 
-DESIGN OVERLAY:
-- Dark gradient from bottom: starts at 0% opacity at vertical center, reaches 85% black opacity at bottom edge
-- The gradient should be SMOOTH and natural, not harsh
-- Add a thin horizontal line (1px, gold #d4a843) positioned at 70% from top
+DO NOT add any text, words, letters, logos, or watermarks.
+DO NOT add any UI elements, buttons, or frames.
+ONLY edit the photo visually — the result should be a beautiful edited photograph with a gradient overlay at the bottom.
+Output: 1080x1080 pixels, square crop, high quality JPEG.`,
 
-TEXT PLACEMENT:
-- Headline: bold sans-serif white text, centered horizontally, positioned at 75% from top (inside the dark gradient zone)
-- Subline: lighter weight, 60% text opacity, centered, 8px below headline
-- CTA: small caps, gold #d4a843 color, centered, at 90% from top
-${TEXT_RULES}
+  "modern-minimal": `Edit this landscaping photo with clean modern treatment:
 
-OUTPUT: exactly 1080x1080 pixels, square, high quality`,
+PHOTO EDITING (apply ALL):
+1. BRIGHT AIRY GRADE: Lift shadows +25%, soft warm white balance, slight highlight bloom
+2. DESATURATION: Reduce overall saturation by 10% for editorial feel
+3. CLARITY: High clarity and sharpness — magazine-quality crisp
+4. LIGHT LEAK: Very subtle warm light leak from top-right corner (5% opacity)
+5. BOTTOM BAR: Add a solid white rectangle at the very bottom — full width, 18% of image height, with 90% opacity white fill
+6. ACCENT LINE: Thin horizontal gold line (#d4a843, 2px) at the top edge of the white rectangle
 
-  "modern-minimal": `Transform this landscaping photo into a clean architectural social media post:
+DO NOT add any text, words, letters, or watermarks.
+Only the photo edit + white bar + gold accent line. No text at all.
+Output: 1080x1080 pixels, square.`,
 
-PHOTO TREATMENT:
-- Bright airy grade: lift shadows +20%, soft warm white balance, high clarity/sharpness
-- Slight desaturation (-10%) for premium editorial feel
-- Clean, crisp, magazine-quality look
+  "bold-statement": `Edit this landscaping photo with bold dramatic treatment:
 
-DESIGN OVERLAY:
-- Semi-transparent white rectangle: full width, height = 18% of image, anchored to bottom
-- Rectangle opacity: 88% white (#ffffff with 0.88 alpha)
-- Thin gold line (#d4a843, 2px) at the top edge of the white rectangle
-- Small gold square (12x12px) as accent element at left margin of the text area
+PHOTO EDITING (apply ALL):
+1. HIGH CONTRAST: Push contrast dramatically — deep true blacks, vivid saturated colors
+2. TEAL SHADOWS: Shift shadows toward dark blue-teal for cinematic depth
+3. DARK OVERLAY: Apply 35% opacity black overlay on entire image for moodiness
+4. CORNER ACCENTS: Add thin L-shaped bracket lines (2px, gold #d4a843) at top-left corner and bottom-right corner — each arm 80px long
+5. VIGNETTE: Strong vignette darkening corners by 40%
+6. SHARPNESS: Maximum clarity for dramatic impact
 
-TEXT PLACEMENT:
-- Headline: dark text (#1a1a2e), bold sans-serif, positioned inside the white rectangle, left-aligned with 60px left margin, vertically centered in the bar
-- Subline: same alignment, regular weight, smaller size, gray (#666), 4px below headline
-${TEXT_RULES}
+DO NOT add any text, words, letters, or watermarks.
+Only the photo edit + corner bracket accents. No text at all.
+Output: 1080x1080 pixels, square.`,
 
-OUTPUT: exactly 1080x1080 pixels, square`,
+  "split-comparison": `Edit this landscaping photo with a split comparison effect:
 
-  "bold-statement": `Transform this landscaping photo into a high-impact bold social media post:
+PHOTO EDITING (apply ALL):
+1. RIGHT HALF: Warm vibrant color grade — lush greens, golden warm light, saturated
+2. LEFT HALF: Cooler desaturated treatment — slightly washed out, less vibrant, lower contrast
+3. CENTER DIVIDER: Thin diagonal line (2px, gold #d4a843) from top-center to bottom-center
+4. DIAMOND ACCENT: Small gold diamond shape (12px) at the center intersection point
+5. BOTTOM BANNER: Dark semi-transparent strip (full width, 12% height, 70% black opacity) at the very bottom edge
 
-PHOTO TREATMENT:
-- High dramatic contrast: deep blacks, vivid saturated colors
-- Slight blue-teal shift in shadows for cinematic depth
-- Dark overlay at 30% opacity over entire image to make text pop
+DO NOT add any text, words, labels like "before" or "after", or watermarks.
+Only the split color treatment + divider line + bottom dark strip.
+Output: 1080x1080 pixels, square.`,
 
-DESIGN OVERLAY:
-- Thin corner bracket frames: L-shaped lines (2px, gold #d4a843) at top-left and bottom-right corners, each arm 60px long
-- NO full border — just the corner accents
+  "luxury-showcase": `Edit this landscaping photo with luxury editorial treatment:
 
-TEXT PLACEMENT:
-- Headline: LARGE bold white text, centered both horizontally and vertically in the image
-- The headline should be the HERO element — dominant, attention-grabbing
-- Text shadow: 2px 2px 8px rgba(0,0,0,0.7) for contrast
-- CTA: small text at bottom center, 85% from top, gold #d4a843 color
-- Keep headline to MAX 4-5 words — if provided text is longer, use only the most impactful words
-${TEXT_RULES}
+PHOTO EDITING (apply ALL):
+1. EDITORIAL GRADE: Rich warm tones, lifted blacks (not pure black — more like #1a1a2e minimum)
+2. GOLDEN HOUR: Push overall warmth, add subtle amber to highlights
+3. FILM GRAIN: Very subtle fine grain texture for analog premium feel
+4. INSET BORDER: Thin elegant border (2px, gold #d4a843 at 35% opacity), inset 50px from each edge
+5. CORNER CARD: Small semi-transparent dark rectangle (140x80px, rgba(0,0,0,0.55), rounded corners) positioned at bottom-left, inside the inset border
+6. LENS FLARE: Very subtle warm lens flare or light streak from top-right (barely visible)
 
-OUTPUT: exactly 1080x1080 pixels, square`,
+DO NOT add any text, words, letters, or watermarks.
+Only the photo edit + border + dark corner card rectangle (empty, no text).
+Output: 1080x1080 pixels, square.`,
 
-  "split-comparison": `Transform this landscaping photo into a professional before/after comparison post:
+  "engagement-question": `Edit this landscaping photo for maximum engagement visual:
 
-PHOTO TREATMENT:
-- Right side (the "AFTER"): warm, vibrant color grade — lush greens, golden light
-- Left side (the "BEFORE"): slightly desaturated, cooler tones to imply the "before" state
-- Both sides should still show the same photo but with different color treatments
+PHOTO EDITING (apply ALL):
+1. VIBRANT COLORS: Boost saturation +30%, especially greens and blues
+2. WARM HIGHLIGHTS: Push highlights toward orange-gold for energy
+3. HIGH CLARITY: Maximum sharpness and micro-contrast
+4. FROSTED GLASS: Add a frosted/blurred glass rectangle — centered, 65% width, 28% height, centered vertically — with white border (1px, 40% opacity), rounded corners (20px), and blurred/frosted fill
+5. BOTTOM PILL: Small dark rounded pill shape (200x36px, rgba(0,0,0,0.6)) centered at 88% from top
 
-DESIGN OVERLAY:
-- Thin diagonal line from top-center to bottom-center (2px, gold #d4a843) dividing the image
-- Small gold diamond shape (10px) where the diagonal meets the horizontal center
-
-TEXT PLACEMENT:
-- "BEFORE" label: white text, positioned at 25% from left, 12% from top, small caps, with dark pill background (rgba(0,0,0,0.5) rounded rectangle behind it)
-- "AFTER" label: white text, positioned at 75% from left, 12% from top, same style
-- Bottom banner: full width, 12% height, dark semi-transparent (#000 at 70%), with headline text centered in white
-${TEXT_RULES}
-
-OUTPUT: exactly 1080x1080 pixels, square`,
-
-  "luxury-showcase": `Transform this landscaping photo into a luxury real estate marketing post:
-
-PHOTO TREATMENT:
-- Editorial color grade: rich warm tones, slightly lifted blacks (not pure black, more like #1a1a2e)
-- Gentle warmth, golden hour feel even if original isn't golden hour
-- Subtle film grain texture for premium analog feel
-
-DESIGN OVERLAY:
-- Thin elegant border: 3px inset border, 40px from each edge, color gold #d4a843 at 40% opacity
-- Bottom-left corner: semi-transparent dark card (160x90px, rgba(0,0,0,0.65), rounded 8px) for project details
-- Top-right: small gold Viva "V" logomark or gold dot accent
-
-TEXT PLACEMENT:
-- Inside the bottom-left card: project type in gold, location in white smaller text below
-- Headline: positioned at bottom-center, just above the border line, white, medium weight
-- All text must stay WELL inside the inset border
-${TEXT_RULES}
-
-OUTPUT: exactly 1080x1080 pixels, square`,
-
-  "engagement-question": `Transform this landscaping photo into a scroll-stopping engagement post:
-
-PHOTO TREATMENT:
-- VIBRANT saturated colors: boost greens +25%, warm highlights pushed toward orange/gold
-- High clarity and sharpness for screen pop
-- Bright, energetic, eye-catching mood
-
-DESIGN OVERLAY:
-- Center zone: frosted glass effect rectangle (60% width, 30% height, centered) with blurred background and white border (1px, 50% opacity)
-- The frosted rectangle should have rounded corners (16px radius)
-- Bottom strip: small dark pill with "Comenta tu respuesta 👇" text
-
-TEXT PLACEMENT:
-- Question text: bold white, centered inside the frosted glass rectangle, maximum 2 lines
-- The question should be the LARGEST text element on the image
-- Text shadow for readability: 1px 1px 4px rgba(0,0,0,0.5)
-- Bottom pill CTA: centered horizontally, 88% from top
-${TEXT_RULES}
-
-OUTPUT: exactly 1080x1080 pixels, square`,
+DO NOT add any text, words, emojis, or watermarks.
+Only the photo edit + frosted glass rectangle + bottom pill (both empty, no text inside).
+Output: 1080x1080 pixels, square.`,
 };
 
 export async function POST(req: NextRequest) {
@@ -148,18 +101,15 @@ export async function POST(req: NextRequest) {
   let body;
   try { body = await req.json(); } catch { return NextResponse.json({ error: "Body invalido" }, { status: 400 }); }
 
-  const { imageUrl, prompt, style, headline, subline, cta } = body;
+  const { imageUrl, prompt, style } = body;
   if (!prompt?.trim() && !style) return NextResponse.json({ error: "Se necesita un prompt o estilo" }, { status: 400 });
 
+  // No more headline/subline/cta injection — text is rendered client-side
   let fullPrompt = "";
   if (style && PREMIUM_STYLES[style]) {
     fullPrompt = PREMIUM_STYLES[style];
-    if (headline) fullPrompt += `\n\nEXACT headline text to render: "${headline}"`;
-    if (subline) fullPrompt += `\nEXACT subline text to render: "${subline}"`;
-    if (cta) fullPrompt += `\nEXACT CTA text to render: "${cta}"`;
-    fullPrompt += `\n\nREMINDER: Every single character of text must be fully visible within the image. No clipping.`;
   } else if (prompt) {
-    fullPrompt = prompt + TEXT_RULES;
+    fullPrompt = prompt + "\n\nDO NOT add any text, words, or letters to the image. Only visual edits.";
   }
 
   const models = ["gemini-2.5-flash-image", "gemini-3-pro-image-preview", "gemini-3.1-flash-image-preview"];
@@ -172,9 +122,7 @@ export async function POST(req: NextRequest) {
         const imgRes = await fetch(imageUrl, { signal: AbortSignal.timeout(10000) });
         if (imgRes.ok) {
           const buffer = await imgRes.arrayBuffer();
-          const base64 = Buffer.from(buffer).toString("base64");
-          const mimeType = imgRes.headers.get("content-type") || "image/jpeg";
-          parts.push({ inlineData: { mimeType, data: base64 } });
+          parts.push({ inlineData: { mimeType: imgRes.headers.get("content-type") || "image/jpeg", data: Buffer.from(buffer).toString("base64") } });
         }
       } catch (e) { console.error("Image download failed:", e); }
     }
@@ -186,11 +134,7 @@ export async function POST(req: NextRequest) {
       try {
         const geminiRes = await fetch(
           `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${geminiKey}`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ contents: [{ parts }], generationConfig: { responseModalities: ["IMAGE", "TEXT"] } }),
-          }
+          { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ contents: [{ parts }], generationConfig: { responseModalities: ["IMAGE", "TEXT"] } }) }
         );
 
         if (!geminiRes.ok) { lastError = `${modelId}: ${geminiRes.status}`; continue; }

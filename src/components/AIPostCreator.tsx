@@ -83,6 +83,9 @@ export default function AIPostCreator({ open, onClose, onSaveDraft, onSchedule }
   const [isReEditing, setIsReEditing] = useState(false);
   const [reEditPrompt, setReEditPrompt] = useState("");
 
+  // Fullscreen preview
+  const [showFullscreen, setShowFullscreen] = useState(false);
+
   // Schedule form
   const [scheduleDate, setScheduleDate] = useState("");
   const [scheduleTime, setScheduleTime] = useState("12:00");
@@ -161,13 +164,7 @@ export default function AIPostCreator({ open, onClose, onSaveDraft, onSchedule }
       const editRes = await fetch("/api/edit-image", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          imageUrl: photoUrl,
-          style: editStyle,
-          headline: postJson.post.headline || "",
-          subline: postJson.post.subline || "",
-          cta: postJson.post.ctaText || "",
-        }),
+        body: JSON.stringify({ imageUrl: photoUrl, style: editStyle }),
       });
       const editJson = await editRes.json();
       if (editJson.image) { setEditedImage(editJson.image); setStep("result"); }
@@ -180,7 +177,7 @@ export default function AIPostCreator({ open, onClose, onSaveDraft, onSchedule }
     setIsReEditing(true); setError("");
     const body: Record<string, string> = {};
     if (customPrompt) { body.prompt = customPrompt; }
-    else { body.style = styleOverride || editStyle; body.headline = postData.headline || ""; body.subline = postData.subline || ""; body.cta = postData.ctaText || ""; }
+    else { body.style = styleOverride || editStyle; }
     if (editedImage) body.imageUrl = editedImage;
 
     try {
@@ -212,6 +209,29 @@ export default function AIPostCreator({ open, onClose, onSaveDraft, onSchedule }
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-overlay-in" onClick={onClose} />
+
+      {/* Fullscreen image modal */}
+      {showFullscreen && editedImage && (
+        <div className="fixed inset-0 z-[70] bg-black/95 flex items-center justify-center p-4 animate-overlay-in" onClick={() => setShowFullscreen(false)}>
+          <button onClick={() => setShowFullscreen(false)} className="absolute top-4 right-4 p-2 rounded-full bg-white/10 text-white hover:bg-white/20 transition-all z-10"><XIcon className="w-6 h-6" /></button>
+          <div className="relative max-w-[90vw] max-h-[90vh] aspect-square">
+            <img src={editedImage} alt="Preview completo" className="w-full h-full object-contain rounded-xl" />
+            {postData.headline && (
+              <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-10 pointer-events-none rounded-xl overflow-hidden">
+                <div className="bg-gradient-to-t from-black/70 via-black/30 to-transparent absolute inset-0 rounded-xl" />
+                <div className="relative z-10">
+                  <div className="w-12 h-[2px] bg-[#d4a843] mb-3 rounded-full" />
+                  <p className="text-white font-bold text-2xl md:text-4xl leading-tight drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">{postData.headline}</p>
+                  {postData.subline && <p className="text-white/70 text-sm md:text-lg mt-2 font-medium drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)]">{postData.subline}</p>}
+                  {postData.ctaText && (
+                    <span className="inline-block mt-3 px-5 py-2 bg-[#d4a843] text-black text-xs md:text-sm font-bold rounded-full uppercase tracking-wider">{postData.ctaText}</span>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       <div className="relative z-10 w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl border border-[var(--border-gold)] bg-[var(--bg-secondary)] shadow-2xl animate-fade-up">
 
@@ -326,13 +346,33 @@ export default function AIPostCreator({ open, onClose, onSaveDraft, onSchedule }
           {/* ═══ RESULT ═══ */}
           {step === "result" && (
             <>
-              <div className="rounded-2xl overflow-hidden border border-[var(--border-gold)] shadow-lg shadow-[var(--gold-primary)]/10 relative">
+              {/* Image with CSS text overlay */}
+              <div
+                className="rounded-2xl overflow-hidden border border-[var(--border-gold)] shadow-lg shadow-[var(--gold-primary)]/10 relative cursor-pointer"
+                onClick={() => setShowFullscreen(true)}
+              >
                 {isReEditing && (
                   <div className="absolute inset-0 z-10 bg-black/50 flex items-center justify-center rounded-2xl">
                     <span className="w-8 h-8 border-3 border-white/30 border-t-white rounded-full animate-spin" />
                   </div>
                 )}
                 <img src={editedImage} alt="Post editado" className="w-full aspect-square object-cover" />
+                {/* CSS Text Overlay */}
+                {postData.headline && (
+                  <div className="absolute inset-0 flex flex-col justify-end p-5 pointer-events-none">
+                    <div className="bg-gradient-to-t from-black/70 via-black/30 to-transparent absolute inset-0" />
+                    <div className="relative z-10">
+                      <div className="w-8 h-[2px] bg-[#d4a843] mb-2 rounded-full" />
+                      <p className="text-white font-bold text-lg leading-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{postData.headline}</p>
+                      {postData.subline && <p className="text-white/70 text-xs mt-1 font-medium drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">{postData.subline}</p>}
+                      {postData.ctaText && (
+                        <span className="inline-block mt-2 px-3 py-1 bg-[#d4a843] text-black text-[10px] font-bold rounded-full uppercase tracking-wider">{postData.ctaText}</span>
+                      )}
+                    </div>
+                  </div>
+                )}
+                {/* Tap to expand hint */}
+                <div className="absolute top-2 right-2 px-2 py-1 bg-black/50 rounded-md text-[9px] text-white/70 pointer-events-none">Toca para ampliar</div>
               </div>
 
               <div className="rounded-xl border border-[var(--border-color)] bg-[var(--bg-primary)]/50 p-3 space-y-1.5">
