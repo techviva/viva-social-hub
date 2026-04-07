@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const maxDuration = 60;
 
-/* ── Premium edit prompt templates for landscaping industry ── */
-
 const PREMIUM_STYLES: Record<string, string> = {
   "gradient-overlay": `Edit this landscaping photo into a premium social media post:
 - Apply a rich cinematic color grade: warm golden highlights, deep shadows, slight teal in midtones
@@ -60,8 +58,6 @@ const PREMIUM_STYLES: Record<string, string> = {
 - Output must be exactly 1080x1080 pixels, square format`,
 };
 
-const STYLE_KEYS = Object.keys(PREMIUM_STYLES);
-
 export async function POST(req: NextRequest) {
   const geminiKey = process.env.GEMINI_API_KEY;
   if (!geminiKey) return NextResponse.json({ error: "GEMINI_API_KEY no configurada" }, { status: 500 });
@@ -72,59 +68,43 @@ export async function POST(req: NextRequest) {
   const { imageUrl, prompt, style, headline, subline, cta } = body;
   if (!prompt?.trim() && !style) return NextResponse.json({ error: "Se necesita un prompt o estilo" }, { status: 400 });
 
-  // Build the edit prompt
   let fullPrompt = "";
   if (style && PREMIUM_STYLES[style]) {
     fullPrompt = PREMIUM_STYLES[style];
-    // Inject dynamic text
-    if (headline) fullPrompt += `\n\nHeadline text to use: "${headline}"`;
-    if (subline) fullPrompt += `\nSubline/subtext: "${subline}"`;
+    if (headline) fullPrompt += `\n\nHeadline text to use on the image: "${headline}"`;
+    if (subline) fullPrompt += `\nSubline/subtext to use: "${subline}"`;
     if (cta) fullPrompt += `\nCTA text: "${cta}"`;
-  } else {
+  } else if (prompt) {
     fullPrompt = prompt;
   }
 
-  // Use the correct model: gemini-2.0-flash-preview-image-generation
-  const modelId = "gemini-2.0-flash-preview-image-generation";
+  // Models to try in order
+  const models = ["gemini-2.5-flash-image", "gemini-3-pro-image-preview", "gemini-3.1-flash-image-preview"];
 
   try {
     const parts: Record<string, unknown>[] = [];
 
-    // Download and include reference image
     if (imageUrl) {
-      const imgRes = await fetch(imageUrl, { signal: AbortSignal.timeout(10000) });
-      if (imgRes.ok) {
-        const buffer = await imgRes.arrayBuffer();
-        const base64 = Buffer.from(buffer).toString("base64");
-        const mimeType = imgRes.headers.get("content-type") || "image/jpeg";
-        parts.push({ inlineData: { mimeType, data: base64 } });
+      try {
+        const imgRes = await fetch(imageUrl, { signal: AbortSignal.timeout(10000) });
+        if (imgRes.ok) {
+          const buffer = await imgRes.arrayBuffer();
+          const base64 = Buffer.from(buffer).toString("base64");
+          const mimeType = imgRes.headers.get("content-type") || "image/jpeg";
+          parts.push({ inlineData: { mimeType, data: base64 } });
+        }
+      } catch (e) {
+        console.error("Image download failed:", e);
       }
     }
 
     parts.push({ text: fullPrompt });
 
-    const geminiRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${geminiKey}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ parts }],
-          generationConfig: {
-            responseModalities: ["IMAGE", "TEXT"],
-          },
-        }),
-      }
-    );
-
-    if (!geminiRes.ok) {
-      const errText = await geminiRes.text();
-      console.error("Gemini error:", geminiRes.status, errText);
-
-      // If model not available, try fallback
-      if (geminiRes.status === 404 || errText.includes("not found")) {
-        const fallbackRes = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`,
+    let lastError = "";
+    for (const modelId of models) {
+      try {
+        const geminiRes = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${geminiKey}`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -134,49 +114,46 @@ export async function POST(req: NextRequest) {
             }),
           }
         );
-        if (!fallbackRes.ok) {
-          return NextResponse.json({ error: `Gemini API error: ${geminiRes.status}` }, { status: 502 });
-        }
-        const fallbackData = await fallbackRes.json();
-        return processGeminiResponse(fallbackData);
-      }
 
-      return NextResponse.json({ error: `Gemini API error: ${geminiRes.status}` }, { status: 502 });
+        if (!geminiRes.ok) {
+          lastError = `${modelId}: ${geminiRes.status}`;
+          continue;
+        }
+
+        const data = await geminiRes.json();
+        const candidateParts = (data.candidates?.[0]?.content?.parts || []) as Array<{ inlineData?: { data: string; mimeType: string }; text?: string }>;
+
+        let editedImage = null;
+        let textResponse = "";
+        for (const part of candidateParts) {
+          if (part.inlineData?.data) editedImage = { data: part.inlineData.data, mimeType: part.inlineData.mimeType || "image/png" };
+          if (part.text) textResponse += part.text;
+        }
+
+        if (editedImage) {
+          return NextResponse.json({
+            image: `data:${editedImage.mimeType};base64,${editedImage.data}`,
+            text: textResponse,
+            model: modelId,
+          });
+        }
+
+        lastError = `${modelId}: no image in response - ${textResponse.substring(0, 100)}`;
+      } catch (e) {
+        lastError = `${modelId}: ${e instanceof Error ? e.message : "unknown"}`;
+      }
     }
 
-    const data = await geminiRes.json();
-    return processGeminiResponse(data);
+    return NextResponse.json({ error: `Ninguno de los modelos genero imagen. Ultimo error: ${lastError}` }, { status: 422 });
   } catch (err) {
-    console.error("Edit image error:", err);
     return NextResponse.json({ error: `Error: ${err instanceof Error ? err.message : "desconocido"}` }, { status: 500 });
   }
 }
 
-function processGeminiResponse(data: Record<string, unknown>) {
-  const candidates = data.candidates as Array<{ content: { parts: Array<{ inlineData?: { data: string; mimeType: string }; text?: string }> } }> | undefined;
-  const parts = candidates?.[0]?.content?.parts || [];
-
-  let editedImage = null;
-  let textResponse = "";
-
-  for (const part of parts) {
-    if (part.inlineData?.data) {
-      editedImage = { data: part.inlineData.data, mimeType: part.inlineData.mimeType || "image/png" };
-    }
-    if (part.text) textResponse += part.text;
-  }
-
-  if (!editedImage) {
-    return NextResponse.json({ error: "Gemini no genero imagen. " + (textResponse || "Sin respuesta.") }, { status: 422 });
-  }
-
-  return NextResponse.json({
-    image: `data:${editedImage.mimeType};base64,${editedImage.data}`,
-    text: textResponse,
-    styles: STYLE_KEYS,
-  });
-}
-
 export async function GET() {
-  return NextResponse.json({ styles: STYLE_KEYS.map((k) => ({ key: k, name: k.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) })) });
+  const styles = Object.keys(PREMIUM_STYLES).map((k) => ({
+    key: k,
+    name: k.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
+  }));
+  return NextResponse.json({ styles });
 }
