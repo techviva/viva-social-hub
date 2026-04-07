@@ -11,18 +11,19 @@ import type { Section } from "@/components/Sidebar";
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState<Section>("panel");
+  const isCalendar = activeSection === "calendario";
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="h-screen flex flex-col overflow-hidden">
       <Header />
 
       <div className="flex flex-1 overflow-hidden">
         <Sidebar active={activeSection} onChange={setActiveSection} />
 
-        <main className="flex-1 overflow-y-auto px-4 md:px-8 py-6 pb-24 md:pb-6">
-          <div className="max-w-6xl mx-auto">
+        <main className={`flex-1 overflow-hidden flex flex-col ${isCalendar ? "" : "overflow-y-auto"}`}>
+          <div className={isCalendar ? "flex-1 flex flex-col overflow-hidden px-0 py-0" : "max-w-6xl mx-auto w-full px-4 md:px-8 py-6 pb-24 md:pb-6"}>
             {activeSection === "panel" && <DashboardPanel />}
-            {activeSection === "calendario" && <CalendarPanel />}
+            {isCalendar && <CalendarPanel />}
             {activeSection === "ideas" && <IdeasPanel />}
             {activeSection === "metricas" && <MetricsPanel />}
           </div>
