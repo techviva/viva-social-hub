@@ -1,15 +1,39 @@
 import { NextRequest, NextResponse } from "next/server";
 
+export const maxDuration = 30;
+
+function extractJSON(text: string): string {
+  // Strip markdown code fences if present
+  let cleaned = text.trim();
+  if (cleaned.startsWith("```")) {
+    cleaned = cleaned.replace(/^```(?:json)?\s*\n?/, "").replace(/\n?```\s*$/, "");
+  }
+  // Find the first { and last }
+  const start = cleaned.indexOf("{");
+  const end = cleaned.lastIndexOf("}");
+  if (start !== -1 && end !== -1 && end > start) {
+    return cleaned.slice(start, end + 1);
+  }
+  return cleaned;
+}
+
 export async function POST(req: NextRequest) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
-    return NextResponse.json({ error: "API key not configured" }, { status: 500 });
+    return NextResponse.json({ error: "ANTHROPIC_API_KEY no esta configurada en el servidor" }, { status: 500 });
   }
 
-  const { topic, platform, duration, notes } = await req.json();
+  let body;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Request body invalido" }, { status: 400 });
+  }
+
+  const { topic, platform, duration, notes } = body;
 
   if (!topic || typeof topic !== "string" || topic.trim().length === 0) {
-    return NextResponse.json({ error: "Topic is required" }, { status: 400 });
+    return NextResponse.json({ error: "El tema es requerido" }, { status: 400 });
   }
 
   const systemPrompt = `Eres un experto creador de contenido para redes sociales de una empresa de paisajismo y diseño exterior llamada Viva Landscape & Design en Phoenix, Arizona.
@@ -20,7 +44,7 @@ REGLAS:
 - Tono: profesional pero cercano, como hablandole a un amigo. Natural, sin sonar corporativo.
 - Idioma: español (de Mexico/Latinoamerica), pero puedes mezclar terminos en ingles cuando sea natural en el contexto de landscaping.
 - El guion debe estar listo para leer frente a camara.
-- Responde SOLO con JSON valido, sin markdown, sin backticks, sin texto adicional.
+- IMPORTANTE: Responde UNICAMENTE con JSON puro. Sin backticks, sin markdown, sin texto antes ni despues del JSON.
 
 FORMATO DE RESPUESTA (JSON):
 {
@@ -67,19 +91,31 @@ ${notes ? `Notas adicionales: ${notes}` : ""}`;
     if (!res.ok) {
       const errBody = await res.text();
       console.error("Anthropic API error:", res.status, errBody);
-      return NextResponse.json({ error: `API error: ${res.status}` }, { status: 502 });
+      return NextResponse.json({ error: `Error de la API de Anthropic: ${res.status}` }, { status: 502 });
     }
 
     const data = await res.json();
-    const text = data.content?.[0]?.text || "";
+    const rawText = data.content?.[0]?.text || "";
 
-    // Parse the JSON from the response
-    const script = JSON.parse(text);
+    if (!rawText) {
+      return NextResponse.json({ error: "La API no devolvio contenido" }, { status: 502 });
+    }
+
+    const jsonStr = extractJSON(rawText);
+
+    let script;
+    try {
+      script = JSON.parse(jsonStr);
+    } catch (parseErr) {
+      console.error("JSON parse error. Raw text:", rawText.substring(0, 500));
+      return NextResponse.json({ error: "Error al parsear la respuesta de la AI. Intenta de nuevo." }, { status: 500 });
+    }
+
     return NextResponse.json({ script });
   } catch (err) {
     console.error("Generate script error:", err);
     return NextResponse.json(
-      { error: "Failed to generate script" },
+      { error: `Error interno: ${err instanceof Error ? err.message : "desconocido"}` },
       { status: 500 }
     );
   }
