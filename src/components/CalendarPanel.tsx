@@ -138,14 +138,18 @@ export default function CalendarPanel() {
   const goToday = () => { setCurrentDate(new Date(today.getFullYear(), today.getMonth(), 1)); setSelectedDay(today.getDate()); };
 
   // ── Drive photos ──
-  const loadDrivePhotos = async (cat?: string) => {
+  const loadDrivePhotos = async (catOrFolderId?: string, isFolderId?: boolean) => {
     setLoadingPhotos(true);
     try {
-      const url = `/api/drive-photos?limit=24${cat ? `&category=${cat}` : ""}`;
-      const res = await fetch(url);
+      const params = new URLSearchParams({ limit: "24" });
+      if (catOrFolderId) {
+        if (isFolderId) params.set("folderId", catOrFolderId);
+        else params.set("category", catOrFolderId);
+      }
+      const res = await fetch(`/api/drive-photos?${params}`);
       const data = await res.json();
       if (data.photos) setDrivePhotos(data.photos);
-      if (data.categories) setDriveCategories(data.categories);
+      if (data.categories?.length) setDriveCategories(data.categories);
     } catch { /* ignore */ }
     setLoadingPhotos(false);
   };
@@ -491,8 +495,8 @@ export default function CalendarPanel() {
                       {driveCategories.length > 0 && (
                         <div className="flex gap-1 flex-wrap">
                           <button onClick={() => loadDrivePhotos()} className="px-2 py-1 rounded-md text-[10px] font-medium bg-[var(--gold-primary)]/10 text-[var(--gold-light)] border border-[var(--border-gold)]">Todas</button>
-                          {driveCategories.slice(0, 6).map((cat) => (
-                            <button key={cat.key} onClick={() => loadDrivePhotos(cat.key)} className="px-2 py-1 rounded-md text-[10px] text-[var(--text-muted)] hover:text-[var(--text-secondary)] border border-[var(--border-color)] hover:border-[var(--border-gold)] transition-all">{cat.name}</button>
+                          {driveCategories.slice(0, 8).map((cat) => (
+                            <button key={cat.id} onClick={() => loadDrivePhotos(cat.id, true)} className="px-2 py-1 rounded-md text-[10px] text-[var(--text-muted)] hover:text-[var(--text-secondary)] border border-[var(--border-color)] hover:border-[var(--border-gold)] transition-all">{cat.name}</button>
                           ))}
                         </div>
                       )}
