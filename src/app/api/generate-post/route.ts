@@ -13,6 +13,8 @@ function extractJSON(text: string): string {
 
 const DRIVE_CATEGORIES = ["best-of-viva", "before-after", "pavers", "turf", "pergolas", "softscape", "lighting", "drone", "landscape", "spotlights", "google-business"];
 
+const TEMPLATE_IDS = ["cinematic-gold", "warm-editorial", "dark-luxury", "bold-center", "bold-diagonal", "clean-bar", "clean-side", "magazine-cover", "photo-journal", "promo-banner", "promo-split", "question-frosted", "engagement-pop"];
+
 export async function POST(req: NextRequest) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) return NextResponse.json({ error: "ANTHROPIC_API_KEY no configurada" }, { status: 500 });
@@ -31,21 +33,22 @@ REGLAS:
 - Tono: profesional pero cercano, como hablandole a un amigo
 - Idioma: español mexicano, mezcla natural de terminos en ingles de landscaping
 - Copy de AGENCIA — gancho poderoso, desarrollo conciso, CTA irresistible
+- headline DEBE ser MUY CORTO: maximo 4-5 palabras, poderoso, directo
+- subline: una frase complementaria corta (5-8 palabras max)
+- ctaText: 2-3 palabras para el boton CTA
 - IMPORTANTE: Responde UNICAMENTE con JSON puro. Sin backticks ni markdown.
 
 FORMATO JSON:
 {
   "title": "Titulo interno (no se publica)",
-  "caption": "Caption completo listo para publicar con emojis, saltos de linea, gancho, desarrollo y CTA. Maximo 2200 caracteres.",
-  "hashtags": "#hashtag1 #hashtag2 ... (10-15 hashtags relevantes)",
-  "hook": "Primera linea del caption — el gancho",
-  "headline": "Texto corto y poderoso para superponer en la imagen (5-8 palabras max)",
-  "subline": "Subtexto para la imagen (una frase corta)",
-  "ctaText": "Texto del boton/CTA visual (2-4 palabras)",
-  "driveCategory": "Una de: ${DRIVE_CATEGORIES.join(", ")} — elige la mas relevante para buscar fotos",
-  "editStyle": "Una de: gradient-overlay, modern-minimal, bold-statement, split-comparison, luxury-showcase, engagement-question — elige la mas impactante para este tema",
+  "caption": "Caption completo listo para publicar con emojis, saltos de linea. Max 2200 chars.",
+  "hashtags": "#hashtag1 #hashtag2 ... (10-15 hashtags)",
+  "headline": "CORTO Y PODEROSO (4-5 palabras max)",
+  "subline": "Subtexto complementario corto",
+  "ctaText": "CTA 2-3 palabras",
+  "driveCategory": "Una de: ${DRIVE_CATEGORIES.join(", ")}",
+  "templateId": "Elige el template que mejor se adapte al tema. Opciones: ${TEMPLATE_IDS.join(", ")}. Para promos usa promo-banner o promo-split. Para preguntas usa question-frosted o engagement-pop. Para proyectos usa cinematic-gold, warm-editorial o magazine-cover. Para contenido bold usa bold-center o bold-diagonal. Para contenido limpio usa clean-bar o clean-side.",
   "suggestedTime": "HH:MM",
-  "contentType": "single | carousel | reel",
   "tags": ["tag1", "tag2"]
 }`;
 
