@@ -110,3 +110,87 @@ export const topPosts: TopPost[] = [
     reach: 8900,
   },
 ];
+
+// 30-day daily data for the line chart
+export interface DailyMetric {
+  day: number;
+  label: string;
+  followers: number;
+  views: number;
+  engagement: number;
+}
+
+function generateDailyData(): DailyMetric[] {
+  const data: DailyMetric[] = [];
+  const baseFollowers = 23200;
+  const baseViews = 4800;
+  const baseEngagement = 4.2;
+
+  for (let i = 0; i < 30; i++) {
+    const noise = Math.sin(i * 0.7) * 0.3 + Math.sin(i * 0.3) * 0.2;
+    const growth = i / 30;
+    const weekendBoost = (i % 7 === 5 || i % 7 === 6) ? 1.15 : 1;
+
+    data.push({
+      day: i + 1,
+      label: `${(i + 9) > 31 ? (i + 9 - 31) : (i + 9)} Abr`.replace(/^(\d) /, "0$1 "),
+      followers: Math.round(baseFollowers + baseFollowers * growth * 0.058 + noise * 200),
+      views: Math.round((baseViews + baseViews * growth * 0.22 + noise * 600) * weekendBoost),
+      engagement: Math.round((baseEngagement + growth * 0.8 + noise * 0.4) * 100) / 100,
+    });
+  }
+  return data;
+}
+
+export const dailyMetrics = generateDailyData();
+
+// Best post of the week
+export const bestPostOfWeek = {
+  title: "Iluminacion de paisaje nocturna",
+  platform: "tiktok" as const,
+  image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=400&h=400&fit=crop",
+  likes: 4230,
+  comments: 312,
+  shares: 1840,
+  reach: 48700,
+  engagementRate: 9.2,
+};
+
+// Platform comparison data for bar chart
+export const platformComparison = [
+  {
+    metric: "Seguidores",
+    instagram: 12847,
+    tiktok: 8423,
+    youtube: 3156,
+    max: 12847,
+  },
+  {
+    metric: "Engagement %",
+    instagram: 4.8,
+    tiktok: 7.2,
+    youtube: 3.1,
+    max: 7.2,
+  },
+  {
+    metric: "Alcance",
+    instagram: 45230,
+    tiktok: 124500,
+    youtube: 18900,
+    max: 124500,
+  },
+  {
+    metric: "Likes",
+    instagram: 3245,
+    tiktok: 18720,
+    youtube: 1456,
+    max: 18720,
+  },
+  {
+    metric: "Comentarios",
+    instagram: 487,
+    tiktok: 1243,
+    youtube: 234,
+    max: 1243,
+  },
+];
