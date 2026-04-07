@@ -9,15 +9,17 @@ import IdeasPanel from "@/components/IdeasPanel";
 import ScriptsPanel from "@/components/ScriptsPanel";
 import CarouselPanel from "@/components/CarouselPanel";
 import MetricsPanel from "@/components/MetricsPanel";
+import AIPostCreator from "@/components/AIPostCreator";
 import type { Section } from "@/components/Sidebar";
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState<Section>("panel");
+  const [showAICreator, setShowAICreator] = useState(false);
   const isCalendar = activeSection === "calendario";
 
   return (
     <div className="h-screen flex flex-col overflow-hidden">
-      <Header />
+      <Header onCreatePost={() => setShowAICreator(true)} />
 
       <div className="flex flex-1 overflow-hidden">
         <Sidebar active={activeSection} onChange={setActiveSection} />
@@ -33,6 +35,8 @@ export default function Home() {
           </div>
         </main>
       </div>
+
+      <AIPostCreator open={showAICreator} onClose={() => setShowAICreator(false)} />
     </div>
   );
 }
