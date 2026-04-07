@@ -1,65 +1,91 @@
-import Image from "next/image";
+"use client";
+
+import { useState, useMemo } from "react";
+import Header from "@/components/Header";
+import StatsBar from "@/components/StatsBar";
+import FilterBar from "@/components/FilterBar";
+import { PostCardGrid, PostCardList } from "@/components/PostCard";
+import { posts } from "@/data/posts";
+import type { Platform, PostStatus } from "@/data/posts";
 
 export default function Home() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activePlatform, setActivePlatform] = useState<Platform | "all">("all");
+  const [activeStatus, setActiveStatus] = useState<PostStatus | "all">("all");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+
+  const filteredPosts = useMemo(() => {
+    return posts.filter((post) => {
+      const matchesPlatform = activePlatform === "all" || post.platform === activePlatform;
+      const matchesStatus = activeStatus === "all" || post.status === activeStatus;
+      const matchesSearch =
+        searchQuery === "" ||
+        post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        post.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        post.tags.some((t) => t.toLowerCase().includes(searchQuery.toLowerCase()));
+      return matchesPlatform && matchesStatus && matchesSearch;
+    });
+  }, [activePlatform, activeStatus, searchQuery]);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen flex flex-col">
+      <Header searchQuery={searchQuery} onSearchChange={setSearchQuery} />
+
+      <main className="flex-1 px-4 md:px-8 py-6 max-w-7xl mx-auto w-full space-y-6">
+        {/* Stats */}
+        <StatsBar />
+
+        {/* Section Title + Filters */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-[var(--text-primary)]">
+              Publicaciones Programadas
+              <span className="ml-2 text-sm font-normal text-[var(--text-muted)]">
+                ({filteredPosts.length})
+              </span>
+            </h2>
+          </div>
+
+          <FilterBar
+            activePlatform={activePlatform}
+            onPlatformChange={setActivePlatform}
+            activeStatus={activeStatus}
+            onStatusChange={setActiveStatus}
+            viewMode={viewMode}
+            onViewModeChange={setViewMode}
+          />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+
+        {/* Posts Grid/List */}
+        {filteredPosts.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20 text-center">
+            <div className="w-16 h-16 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-color)] flex items-center justify-center mb-4">
+              <span className="text-2xl">📭</span>
+            </div>
+            <p className="text-[var(--text-secondary)] font-medium">No se encontraron publicaciones</p>
+            <p className="text-sm text-[var(--text-muted)] mt-1">Intenta ajustar los filtros o busqueda</p>
+          </div>
+        ) : viewMode === "grid" ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {filteredPosts.map((post) => (
+              <PostCardGrid key={post.id} post={post} />
+            ))}
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {filteredPosts.map((post) => (
+              <PostCardList key={post.id} post={post} />
+            ))}
+          </div>
+        )}
       </main>
+
+      {/* Footer */}
+      <footer className="border-t border-[var(--border-color)] px-4 py-4 text-center">
+        <p className="text-xs text-[var(--text-muted)]">
+          Viva Social Hub &mdash; Content Management System
+        </p>
+      </footer>
     </div>
   );
 }
