@@ -6,6 +6,7 @@ import Sidebar from "@/components/Sidebar";
 import DashboardPanel from "@/components/DashboardPanel";
 import CalendarPanel from "@/components/CalendarPanel";
 import IdeasPanel from "@/components/IdeasPanel";
+import ScriptsPanel from "@/components/ScriptsPanel";
 import MetricsPanel from "@/components/MetricsPanel";
 import type { Section } from "@/components/Sidebar";
 
@@ -25,6 +26,7 @@ export default function Home() {
             {activeSection === "panel" && <DashboardPanel />}
             {isCalendar && <CalendarPanel />}
             {activeSection === "ideas" && <IdeasPanel />}
+            {activeSection === "guiones" && <ScriptsPanel />}
             {activeSection === "metricas" && <MetricsPanel />}
           </div>
         </main>

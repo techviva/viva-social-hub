@@ -1,8 +1,8 @@
 "use client";
 
-import { HomeIcon, CalendarIcon, LightbulbIcon, BarChartIcon } from "./Icons";
+import { HomeIcon, CalendarIcon, LightbulbIcon, BarChartIcon, ScriptIcon } from "./Icons";
 
-export type Section = "panel" | "calendario" | "ideas" | "metricas";
+export type Section = "panel" | "calendario" | "ideas" | "guiones" | "metricas";
 
 interface SidebarProps {
   active: Section;
@@ -13,6 +13,7 @@ const navItems: { key: Section; label: string; icon: React.ReactNode }[] = [
   { key: "panel", label: "Panel", icon: <HomeIcon className="w-5 h-5" /> },
   { key: "calendario", label: "Calendario", icon: <CalendarIcon className="w-5 h-5" /> },
   { key: "ideas", label: "Ideas", icon: <LightbulbIcon className="w-5 h-5" /> },
+  { key: "guiones", label: "Guiones", icon: <ScriptIcon className="w-5 h-5" /> },
   { key: "metricas", label: "Metricas", icon: <BarChartIcon className="w-5 h-5" /> },
 ];
 
@@ -46,14 +47,14 @@ export default function Sidebar({ active, onChange }: SidebarProps) {
             <button
               key={item.key}
               onClick={() => onChange(item.key)}
-              className={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg transition-all min-w-[60px] ${
+              className={`flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-lg transition-all min-w-[48px] ${
                 active === item.key
                   ? "text-[var(--gold-light)]"
                   : "text-[var(--text-muted)]"
               }`}
             >
               {item.icon}
-              <span className="text-[10px] font-medium">{item.label}</span>
+              <span className="text-[9px] font-medium">{item.label}</span>
               {active === item.key && (
                 <div className="w-1 h-1 rounded-full bg-[var(--gold-primary)]" />
               )}
