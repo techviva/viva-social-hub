@@ -81,6 +81,15 @@ const CHANNEL_TYPES: Record<ChannelGroup, { key: string; label: string }[]> = {
   ],
 };
 
+function compressImage(dataUrl: string, maxSize = 600): Promise<string> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => { const c = document.createElement("canvas"); c.width = maxSize; c.height = maxSize; c.getContext("2d")?.drawImage(img, 0, 0, maxSize, maxSize); resolve(c.toDataURL("image/jpeg", 0.7)); };
+    img.onerror = () => resolve(dataUrl);
+    img.src = dataUrl;
+  });
+}
+
 type Step = "config" | "working" | "results" | "detail" | "schedule";
 
 export default function AIPostCreator({ open, onClose, onSaveDraft, onSchedule }: AIPostCreatorProps) {
@@ -183,6 +192,7 @@ export default function AIPostCreator({ open, onClose, onSaveDraft, onSchedule }
         const postJson = await postRes.json();
         if (!postRes.ok) { setError(postJson.error || `Error en creativo ${i + 1}`); continue; }
 
+        // 2. Get photo from Drive
         setStatusMsg(`Buscando foto ${i + 1} de ${total}...`);
         const category = postJson.post.driveCategory || "best-of-viva";
         const driveRes = await fetch(`/api/drive-photos?limit=8&category=${category}`);
@@ -193,10 +203,25 @@ export default function AIPostCreator({ open, onClose, onSaveDraft, onSchedule }
           photoUrl = driveJson.photos[idx].previewUrl;
         }
 
+        // 3. Edit photo with Gemini using Claude's art direction
+        let editedPhotoUrl = photoUrl;
+        if (postJson.post.geminiPrompt) {
+          setStatusMsg(`Editando foto ${i + 1} con Gemini...`);
+          try {
+            const editRes = await fetch("/api/edit-image", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ imageUrl: photoUrl, prompt: postJson.post.geminiPrompt }),
+            });
+            const editJson = await editRes.json();
+            if (editJson.image) editedPhotoUrl = editJson.image;
+          } catch { /* fallback to original photo */ }
+        }
+
         const tpl = getTemplateById(postJson.post.templateId) || POST_TEMPLATES[i % POST_TEMPLATES.length];
         const variation = postJson.post.variation || getRandomVariation();
 
-        results.push({ postData: postJson.post, photoUrl, template: tpl, variation });
+        results.push({ postData: postJson.post, photoUrl: editedPhotoUrl, template: tpl, variation });
         setProgress(((i + 1) / total) * 100);
       } catch {
         setError(`Error en creativo ${i + 1}`);
@@ -232,9 +257,16 @@ export default function AIPostCreator({ open, onClose, onSaveDraft, onSchedule }
     };
   }, [generatedPosts, activeIndex, prompt, editHeadline, editSubline, editCta, channelGroup, channelType]);
 
-  const handleSaveDraft = () => { onSaveDraft(buildDraft()); };
-  const handleSaveAll = () => {
-    generatedPosts.forEach((gp, i) => {
+  const handleSaveDraft = async () => {
+    const draft = buildDraft();
+    if (draft.image.startsWith("data:")) draft.image = await compressImage(draft.image);
+    onSaveDraft(draft);
+  };
+  const handleSaveAll = async () => {
+    for (let i = 0; i < generatedPosts.length; i++) {
+      const gp = generatedPosts[i];
+      let img = gp.photoUrl;
+      if (img.startsWith("data:")) img = await compressImage(img);
       onSaveDraft({
         id: `draft-${Date.now()}-${i}`,
         title: gp.postData.title || prompt.substring(0, 50),
@@ -243,14 +275,14 @@ export default function AIPostCreator({ open, onClose, onSaveDraft, onSchedule }
         headline: gp.postData.headline || "",
         subline: gp.postData.subline,
         ctaText: gp.postData.ctaText,
-        image: gp.photoUrl,
+        image: img,
         platform: channelGroup as Platform,
         channelType,
         templateId: gp.template.id,
         variation: gp.variation,
         createdAt: new Date().toISOString(),
       });
-    });
+    }
     onClose();
   };
   const handleSchedule = () => {
