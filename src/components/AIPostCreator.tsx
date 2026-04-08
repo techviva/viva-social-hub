@@ -143,39 +143,52 @@ export default function AIPostCreator({ open, onClose, onSaveDraft, onSchedule }
 
   const activePost = generatedPosts[activeIndex];
 
+  // ── Parse prompts: multiple lines = multiple unique prompts ──
+  const parsePrompts = (): string[] => {
+    const lines = prompt.split("\n").map((l) => l.trim()).filter((l) => l.length > 0);
+    if (lines.length > 1) return lines;
+    // Single prompt — replicate for postCount
+    return Array.from({ length: postCount }, () => lines[0] || prompt.trim());
+  };
+
+  const totalToGenerate = () => {
+    const lines = prompt.split("\n").map((l) => l.trim()).filter((l) => l.length > 0);
+    return lines.length > 1 ? lines.length : postCount;
+  };
+
   // ── Generate batch ──
   const generate = async () => {
     if (!prompt.trim()) return;
     setStep("working"); setError(""); setGeneratedPosts([]); setProgress(0);
 
+    const prompts = parsePrompts();
+    const total = prompts.length;
     const results: GeneratedPost[] = [];
 
-    for (let i = 0; i < postCount; i++) {
+    for (let i = 0; i < total; i++) {
       try {
-        setStatusMsg(`Generando post ${i + 1} de ${postCount}...`);
-        setProgress(((i) / postCount) * 100);
+        setStatusMsg(`Generando creativo ${i + 1} de ${total}...`);
+        setProgress(((i) / total) * 100);
 
         const postRes = await fetch("/api/generate-post", {
           method: "POST", headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            prompt: prompt.trim(),
+            prompt: prompts[i],
             platform: channelGroup,
             channelType,
             batchIndex: i,
-            batchTotal: postCount,
+            batchTotal: total,
           }),
         });
         const postJson = await postRes.json();
-        if (!postRes.ok) { setError(postJson.error || `Error en post ${i + 1}`); continue; }
+        if (!postRes.ok) { setError(postJson.error || `Error en creativo ${i + 1}`); continue; }
 
-        // Get photo
-        setStatusMsg(`Seleccionando foto ${i + 1} de ${postCount}...`);
+        setStatusMsg(`Buscando foto ${i + 1} de ${total}...`);
         const category = postJson.post.driveCategory || "best-of-viva";
         const driveRes = await fetch(`/api/drive-photos?limit=8&category=${category}`);
         const driveJson = await driveRes.json();
         let photoUrl = "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=800&fit=crop";
         if (driveJson.photos?.length) {
-          // Pick different photo for each post in the batch
           const idx = i % driveJson.photos.length;
           photoUrl = driveJson.photos[idx].previewUrl;
         }
@@ -184,9 +197,9 @@ export default function AIPostCreator({ open, onClose, onSaveDraft, onSchedule }
         const variation = postJson.post.variation || getRandomVariation();
 
         results.push({ postData: postJson.post, photoUrl, template: tpl, variation });
-        setProgress(((i + 1) / postCount) * 100);
+        setProgress(((i + 1) / total) * 100);
       } catch {
-        setError(`Error generando post ${i + 1}`);
+        setError(`Error en creativo ${i + 1}`);
       }
     }
 
@@ -284,8 +297,16 @@ export default function AIPostCreator({ open, onClose, onSaveDraft, onSchedule }
               {/* Prompt */}
               <div>
                 <label className="text-[11px] uppercase tracking-wider text-[var(--text-muted)] mb-1.5 block font-semibold">Describe tu contenido</label>
-                <textarea value={prompt} onChange={(e) => setPrompt(e.target.value)} placeholder='Ej: "Before & after de pavers travertino" o "Promo spring 15% off turf"' rows={3}
+                <textarea value={prompt} onChange={(e) => setPrompt(e.target.value)}
+                  placeholder={"Una idea por linea = un creativo por cada una:\n\nEj:\nBefore & after pavers travertino en Scottsdale\nPromo spring 15% off turf sintetico\n5 razones para elegir pergola de aluminio\nTestimonio cliente: familia Rodriguez"}
+                  rows={5}
                   className="w-full px-4 py-3 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-leaf)] focus:ring-1 focus:ring-[var(--accent-leaf)]/30 transition-all resize-none" />
+                {prompt.split("\n").filter((l) => l.trim()).length > 1 && (
+                  <p className="text-[10px] text-[var(--viva-green-bright)] mt-1.5 flex items-center gap-1">
+                    <SparklesIcon className="w-3 h-3" />
+                    {prompt.split("\n").filter((l) => l.trim()).length} ideas detectadas — se generara un creativo por cada una
+                  </p>
+                )}
               </div>
 
               {/* Level 1: Platform group */}
@@ -314,18 +335,21 @@ export default function AIPostCreator({ open, onClose, onSaveDraft, onSchedule }
                 </div>
               </div>
 
-              {/* Post count */}
-              <div>
-                <label className="text-[11px] uppercase tracking-wider text-[var(--text-muted)] mb-1.5 block font-semibold">Cantidad de creativos: {postCount}</label>
-                <input type="range" min={1} max={10} value={postCount} onChange={(e) => setPostCount(Number(e.target.value))}
-                  className="w-full accent-[var(--accent-leaf)]" />
-                <div className="flex justify-between text-[10px] text-[var(--text-muted)]"><span>1</span><span>5</span><span>10</span></div>
-              </div>
+              {/* Post count — only show if single prompt */}
+              {prompt.split("\n").filter((l) => l.trim()).length <= 1 && (
+                <div>
+                  <label className="text-[11px] uppercase tracking-wider text-[var(--text-muted)] mb-1.5 block font-semibold">Variaciones del mismo tema: {postCount}</label>
+                  <input type="range" min={1} max={10} value={postCount} onChange={(e) => setPostCount(Number(e.target.value))}
+                    className="w-full accent-[var(--accent-leaf)]" />
+                  <div className="flex justify-between text-[10px] text-[var(--text-muted)]"><span>1</span><span>5</span><span>10</span></div>
+                </div>
+              )}
 
               {/* Generate */}
               <button onClick={generate} disabled={!prompt.trim()}
                 className="w-full py-3 rounded-xl bg-gradient-to-r from-[var(--viva-green)] to-[var(--accent-leaf)] text-[var(--bg-primary)] font-bold text-sm disabled:opacity-40 hover:shadow-lg hover:shadow-[var(--accent-leaf)]/25 transition-all active:scale-[0.98]">
-                <SparklesIcon className="w-4 h-4 inline mr-2" />Generar {postCount > 1 ? `${postCount} Posts` : "Post"}
+                <SparklesIcon className="w-4 h-4 inline mr-2" />
+                {(() => { const n = totalToGenerate(); return n > 1 ? `Generar ${n} Creativos` : "Generar Creativo"; })()}
               </button>
             </>
           )}
