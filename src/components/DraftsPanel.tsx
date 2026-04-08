@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { TrashIcon, CalendarIcon, CopyIcon, InstagramIcon, TikTokIcon, YouTubeIcon, EditIcon, XIcon } from "./Icons";
-import { getTemplateById, POST_TEMPLATES } from "@/lib/post-templates";
+import { getTemplateById, POST_TEMPLATES, DEFAULT_VARIATION } from "@/lib/post-templates";
 import PostRenderer from "./PostRenderer";
 import type { DraftPost } from "./AIPostCreator";
 import type { Platform } from "@/data/posts";
@@ -52,7 +52,7 @@ export default function DraftsPanel({ drafts, onDelete, onSchedule }: DraftsPane
                 <div key={draft.id} className="animate-fade-up stagger rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)]/40 overflow-hidden hover:border-[var(--border-gold)] hover:shadow-lg hover:shadow-[var(--gold-primary)]/5 transition-all group" style={{ "--i": idx } as React.CSSProperties}>
                   {/* Rendered preview */}
                   <div className="relative cursor-pointer" onClick={() => setFullscreenDraft(draft)}>
-                    <PostRenderer template={tpl} imageUrl={draft.image} headline={draft.headline} subline={draft.subline} cta={draft.ctaText} />
+                    <PostRenderer template={tpl} variation={draft.variation || DEFAULT_VARIATION} imageUrl={draft.image} headline={draft.headline} subline={draft.subline} cta={draft.ctaText} />
                     <div className="absolute top-2 left-2 z-10"><PlatformBadge platform={draft.platform} /></div>
                     <div className="absolute top-2 right-2 z-10"><span className="text-[10px] px-1.5 py-0.5 rounded-md status-draft">Borrador</span></div>
                     <div className="absolute bottom-2 right-2 z-10 px-1.5 py-0.5 bg-black/50 rounded text-[8px] text-white/60">Ampliar</div>
@@ -96,7 +96,7 @@ export default function DraftsPanel({ drafts, onDelete, onSchedule }: DraftsPane
             <button onClick={() => setFullscreenDraft(null)} className="absolute top-4 right-4 p-2 rounded-full bg-white/10 text-white hover:bg-white/20 transition-all z-10"><XIcon className="w-6 h-6" /></button>
             <div className="flex flex-col md:flex-row gap-4 max-w-5xl w-full max-h-[90vh]" onClick={(e) => e.stopPropagation()}>
               <div className="flex-shrink-0 md:w-[55%] rounded-2xl overflow-hidden">
-                <PostRenderer template={tpl} imageUrl={fullscreenDraft.image} headline={fullscreenDraft.headline} subline={fullscreenDraft.subline} cta={fullscreenDraft.ctaText} />
+                <PostRenderer template={tpl} variation={fullscreenDraft.variation || DEFAULT_VARIATION} imageUrl={fullscreenDraft.image} headline={fullscreenDraft.headline} subline={fullscreenDraft.subline} cta={fullscreenDraft.ctaText} />
               </div>
               <div className="flex-1 overflow-y-auto md:py-4 space-y-4">
                 <div><PlatformBadge platform={fullscreenDraft.platform} /><h3 className="text-lg font-bold text-white mt-2">{fullscreenDraft.title || fullscreenDraft.headline}</h3><p className="text-xs text-white/40 mt-1">{new Date(fullscreenDraft.createdAt).toLocaleDateString("es-MX", { day: "numeric", month: "long", year: "numeric" })} · {tpl.name}</p></div>

@@ -5,7 +5,7 @@ import {
   SparklesIcon, XIcon, InstagramIcon, TikTokIcon, YouTubeIcon,
   CalendarIcon, ScriptIcon, ChevronLeftIcon, ChevronRightIcon,
 } from "./Icons";
-import { POST_TEMPLATES, getTemplateById, type PostTemplate } from "@/lib/post-templates";
+import { POST_TEMPLATES, getTemplateById, getRandomVariation, type PostTemplate, type StyleVariation } from "@/lib/post-templates";
 import PostRenderer from "./PostRenderer";
 import type { Platform } from "@/data/posts";
 
@@ -22,6 +22,7 @@ export interface DraftPost {
   image: string;
   platform: Platform;
   templateId: string;
+  variation?: import("@/lib/post-templates").StyleVariation;
   createdAt: string;
   scheduledDate?: string;
 }
@@ -76,6 +77,7 @@ export default function AIPostCreator({ open, onClose, onSaveDraft, onSchedule }
   const [postData, setPostData] = useState<Record<string, string>>({});
   const [photoUrl, setPhotoUrl] = useState("");
   const [activeTemplate, setActiveTemplate] = useState<PostTemplate>(POST_TEMPLATES[0]);
+  const [activeVariation, setActiveVariation] = useState<StyleVariation>(getRandomVariation());
   const [showFullscreen, setShowFullscreen] = useState(false);
 
   // Editable text
@@ -125,9 +127,14 @@ export default function AIPostCreator({ open, onClose, onSaveDraft, onSchedule }
       setEditSubline(postJson.post.subline || "");
       setEditCta(postJson.post.ctaText || "");
 
-      // Set template
+      // Set template + variation from AI
       const tpl = getTemplateById(postJson.post.templateId) || POST_TEMPLATES[0];
       setActiveTemplate(tpl);
+      if (postJson.post.variation) {
+        setActiveVariation(postJson.post.variation);
+      } else {
+        setActiveVariation(getRandomVariation(postJson.post.accentColor));
+      }
 
       // 2. Get photo from Drive
       setStatusMsg("Seleccionando foto de Drive...");
@@ -169,6 +176,7 @@ export default function AIPostCreator({ open, onClose, onSaveDraft, onSchedule }
       image: imageData,
       platform,
       templateId: activeTemplate.id,
+      variation: activeVariation,
       createdAt: new Date().toISOString(),
       scheduledDate: scheduleDate && scheduleTime ? new Date(`${scheduleDate}T${scheduleTime}`).toISOString() : undefined,
     };
@@ -196,7 +204,7 @@ export default function AIPostCreator({ open, onClose, onSaveDraft, onSchedule }
         <div className="fixed inset-0 z-[70] bg-black flex items-center justify-center animate-overlay-in" onClick={() => setShowFullscreen(false)}>
           <button onClick={() => setShowFullscreen(false)} className="absolute top-4 right-4 p-2 rounded-full bg-white/10 text-white hover:bg-white/20 transition-all z-10"><XIcon className="w-6 h-6" /></button>
           <div className="w-full max-w-[min(90vw,90vh)] aspect-square">
-            <PostRenderer template={activeTemplate} imageUrl={photoUrl} headline={editHeadline} subline={editSubline} cta={editCta} className="rounded-xl w-full" />
+            <PostRenderer template={activeTemplate} variation={activeVariation} imageUrl={photoUrl} headline={editHeadline} subline={editSubline} cta={editCta} className="rounded-xl w-full" />
           </div>
         </div>
       )}
@@ -254,7 +262,7 @@ export default function AIPostCreator({ open, onClose, onSaveDraft, onSchedule }
             <>
               {/* Rendered post preview */}
               <div ref={renderRef} className="rounded-2xl overflow-hidden border border-[var(--border-gold)] shadow-lg shadow-[var(--gold-primary)]/10 cursor-pointer" onClick={() => setShowFullscreen(true)}>
-                <PostRenderer template={activeTemplate} imageUrl={photoUrl} headline={editHeadline} subline={editSubline} cta={editCta} />
+                <PostRenderer template={activeTemplate} variation={activeVariation} imageUrl={photoUrl} headline={editHeadline} subline={editSubline} cta={editCta} />
                 <div className="absolute top-2 right-2 px-2 py-1 bg-black/50 rounded-md text-[9px] text-white/70 pointer-events-none z-20">Toca para ampliar</div>
               </div>
 
@@ -263,7 +271,7 @@ export default function AIPostCreator({ open, onClose, onSaveDraft, onSchedule }
                 <p className="text-[10px] uppercase tracking-wider text-[var(--text-muted)] mb-2 font-semibold">Cambiar estilo</p>
                 <div className="flex gap-1.5 overflow-x-auto pb-1">
                   {POST_TEMPLATES.map((tpl) => (
-                    <button key={tpl.id} onClick={() => setActiveTemplate(tpl)}
+                    <button key={tpl.id} onClick={() => { setActiveTemplate(tpl); setActiveVariation(getRandomVariation(activeVariation.accentColor)); }}
                       className={`flex-shrink-0 w-12 rounded-lg overflow-hidden border-2 transition-all ${activeTemplate.id === tpl.id ? "border-[var(--gold-primary)] scale-110" : "border-transparent opacity-50 hover:opacity-80"}`}>
                       <div className="h-6" style={{ background: tpl.preview }} />
                       <p className="text-[6px] text-center py-0.5 bg-[var(--bg-primary)] text-[var(--text-muted)] truncate px-0.5">{tpl.name}</p>
@@ -316,7 +324,7 @@ export default function AIPostCreator({ open, onClose, onSaveDraft, onSchedule }
             <div className="space-y-4 animate-fade-up">
               <div className="flex items-center gap-3">
                 <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 border border-[var(--border-gold)]">
-                  <PostRenderer template={activeTemplate} imageUrl={photoUrl} headline={editHeadline} subline={editSubline} cta={editCta} />
+                  <PostRenderer template={activeTemplate} variation={activeVariation} imageUrl={photoUrl} headline={editHeadline} subline={editSubline} cta={editCta} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold text-[var(--text-primary)] truncate">{editHeadline}</p>

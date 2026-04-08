@@ -13,7 +13,7 @@ function extractJSON(text: string): string {
 
 const DRIVE_CATEGORIES = ["best-of-viva", "before-after", "pavers", "turf", "pergolas", "softscape", "lighting", "drone", "landscape", "spotlights", "google-business"];
 
-const TEMPLATE_IDS = ["cinematic-gold", "warm-editorial", "dark-luxury", "bold-center", "bold-diagonal", "clean-bar", "clean-side", "magazine-cover", "photo-journal", "promo-banner", "promo-split", "question-frosted", "engagement-pop"];
+const TEMPLATE_IDS = ["cinematic-gold", "warm-editorial", "dark-luxury", "bold-center", "bold-diagonal", "bold-statement", "clean-bar", "clean-side", "whisper", "magazine-cover", "photo-journal", "editorial-grid", "promo-banner", "promo-split", "promo-stripe", "question-frosted", "engagement-pop", "poll-card", "story-spotlight", "story-vignette", "story-cinematic", "project-card", "showcase-sweep"];
 
 export async function POST(req: NextRequest) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -25,41 +25,62 @@ export async function POST(req: NextRequest) {
   const { prompt, platform } = body;
   if (!prompt?.trim()) return NextResponse.json({ error: "Se necesita un prompt" }, { status: 400 });
 
-  const systemPrompt = `Eres un experto en marketing de redes sociales para Viva Landscape & Design, empresa de paisajismo premium en Phoenix, Arizona.
+  const systemPrompt = `Eres un director creativo de agencia para Viva Landscape & Design, paisajismo premium en Phoenix, Arizona.
 
-Genera una publicacion completa de ALTO NIVEL para redes sociales.
+Genera una publicacion de redes sociales Y su direccion artistica visual.
 
-REGLAS:
+REGLAS DE COPY:
 - Tono: profesional pero cercano, como hablandole a un amigo
-- Idioma: español mexicano, mezcla natural de terminos en ingles de landscaping
-- Copy de AGENCIA — gancho poderoso, desarrollo conciso, CTA irresistible
-- headline DEBE ser MUY CORTO: maximo 4-5 palabras, poderoso, directo
-- subline: una frase complementaria corta (5-8 palabras max)
-- ctaText: 2-3 palabras para el boton CTA
-- IMPORTANTE: Responde UNICAMENTE con JSON puro. Sin backticks ni markdown.
+- Idioma: español mexicano con terminos naturales de landscaping en ingles
+- headline: MAXIMO 4-5 palabras, poderoso, directo
+- subline: 5-8 palabras max
+- ctaText: 2-3 palabras
 
-FORMATO JSON:
+REGLAS DE DIRECCION ARTISTICA:
+- Elige un template Y genera variaciones visuales UNICAS para este post
+- Los numeros de filtro deben variar cada vez — NUNCA uses los mismos valores
+- El accentColor debe complementar el tema (dorado para premium, verde para turf/naturaleza, azul para agua/piscinas, rojo para urgencia/promos, purpura para luxury)
+- Varia los angulos de gradiente, la intensidad del contraste, la saturacion
+- Cada post debe sentirse diferente visualmente
+
+Responde UNICAMENTE con JSON puro.
+
 {
-  "title": "Titulo interno (no se publica)",
-  "caption": "Caption completo listo para publicar con emojis, saltos de linea. Max 2200 chars.",
-  "hashtags": "#hashtag1 #hashtag2 ... (10-15 hashtags)",
-  "headline": "CORTO Y PODEROSO (4-5 palabras max)",
-  "subline": "Subtexto complementario corto",
+  "title": "Titulo interno",
+  "caption": "Caption completo con emojis, saltos de linea, gancho+desarrollo+CTA. Max 2200 chars.",
+  "hashtags": "#hash1 #hash2 ... (10-15)",
+  "headline": "4-5 PALABRAS MAX",
+  "subline": "Subtexto corto",
   "ctaText": "CTA 2-3 palabras",
   "driveCategory": "Una de: ${DRIVE_CATEGORIES.join(", ")}",
-  "templateId": "Elige el template que mejor se adapte al tema. Opciones: ${TEMPLATE_IDS.join(", ")}. Para promos usa promo-banner o promo-split. Para preguntas usa question-frosted o engagement-pop. Para proyectos usa cinematic-gold, warm-editorial o magazine-cover. Para contenido bold usa bold-center o bold-diagonal. Para contenido limpio usa clean-bar o clean-side.",
+  "templateId": "Una de: ${TEMPLATE_IDS.join(", ")}",
+  "variation": {
+    "accentColor": "#hex — color acento que complemente el tema",
+    "gradientAngle": 150-210,
+    "filterContrast": 1.0-1.35,
+    "filterSaturate": 0.85-1.45,
+    "filterBrightness": 0.75-1.15,
+    "filterSepia": 0.0-0.15,
+    "overlayOpacity": 0.4-0.85,
+    "headlineColor": "#ffffff o color claro legible",
+    "sublineColor": "rgba(255,255,255,0.5-0.7) o color apropiado",
+    "vignetteStrength": 0.2-0.6,
+    "accentWidth": 20-48,
+    "borderRadius": 0-20
+  },
   "suggestedTime": "HH:MM",
   "tags": ["tag1", "tag2"]
 }`;
 
-  const userMessage = `Genera una publicacion premium sobre: "${prompt}"
-Plataforma: ${platform || "Instagram"}`;
+  const userMessage = `Genera publicacion premium con direccion artistica sobre: "${prompt}"
+Plataforma: ${platform || "Instagram"}
+Timestamp para seed de variacion: ${Date.now()}`;
 
   try {
     const res = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-api-key": apiKey, "anthropic-version": "2023-06-01" },
-      body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 1500, system: systemPrompt, messages: [{ role: "user", content: userMessage }] }),
+      body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 1800, system: systemPrompt, messages: [{ role: "user", content: userMessage }] }),
     });
 
     if (!res.ok) return NextResponse.json({ error: `API error: ${res.status}` }, { status: 502 });
