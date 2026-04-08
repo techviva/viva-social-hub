@@ -39,17 +39,17 @@ export default function DashboardPanel() {
     <div className="space-y-6">
       {/* Welcome & Week Summary */}
       <div>
-        <h2 className="text-xl font-bold text-[var(--text-primary)] mb-1">Panel Principal</h2>
-        <p className="text-sm text-[var(--text-muted)]">Resumen de tu semana y rendimiento</p>
+        <h2 className="text-xl font-bold text-[var(--text-primary)] mb-1">Dashboard</h2>
+        <p className="text-sm text-[var(--text-muted)]">Weekly summary and performance</p>
       </div>
 
       {/* Week Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {[
-          { label: "Posts esta semana", value: weekPosts.length, color: "var(--accent-leaf)", icon: <CalendarIcon className="w-4 h-4" /> },
-          { label: "Borradores", value: weekDrafts, color: "var(--status-draft)", icon: <span className="w-4 h-4 flex items-center justify-center text-xs">~</span> },
-          { label: "Listos", value: weekReady, color: "var(--status-ready)", icon: <TrendUpIcon className="w-4 h-4" /> },
-          { label: "Publicados", value: weekPublished, color: "var(--status-published)", icon: <FireIcon className="w-4 h-4" /> },
+          { label: "Posts this week", value: weekPosts.length, color: "var(--accent-leaf)", icon: <CalendarIcon className="w-4 h-4" /> },
+          { label: "Drafts", value: weekDrafts, color: "var(--status-draft)", icon: <span className="w-4 h-4 flex items-center justify-center text-xs">~</span> },
+          { label: "Ready", value: weekReady, color: "var(--status-ready)", icon: <TrendUpIcon className="w-4 h-4" /> },
+          { label: "Published", value: weekPublished, color: "var(--status-published)", icon: <FireIcon className="w-4 h-4" /> },
         ].map((stat) => (
           <div key={stat.label} className="card-glass rounded-xl p-4 stat-glow">
             <div className="flex items-center gap-2 mb-2">
@@ -67,7 +67,7 @@ export default function DashboardPanel() {
         {/* Follower Growth Chart */}
         <div className="lg:col-span-2 card-glass rounded-2xl p-5">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-semibold text-[var(--text-primary)]">Crecimiento de Seguidores</h3>
+            <h3 className="text-sm font-semibold text-[var(--text-primary)]">Follower Growth</h3>
             <div className="flex items-center gap-3 text-xs">
               <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#e1306c]" />IG</span>
               <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#00f2ea]" />TT</span>
@@ -141,7 +141,7 @@ export default function DashboardPanel() {
         <div className="card-glass rounded-2xl p-5">
           <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4 flex items-center gap-2">
             <FireIcon className="w-4 h-4 text-[var(--accent-leaf)]" />
-            Mejores Posts
+            Top Posts
           </h3>
           <div className="space-y-3">
             {topPosts.map((post, idx) => (
@@ -175,9 +175,9 @@ export default function DashboardPanel() {
 
       {/* Upcoming posts this week */}
       <div className="card-glass rounded-2xl p-5">
-        <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4">Proximos esta semana</h3>
+        <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4">Upcoming this week</h3>
         {weekPosts.length === 0 ? (
-          <p className="text-sm text-[var(--text-muted)] text-center py-6">No hay posts programados esta semana</p>
+          <p className="text-sm text-[var(--text-muted)] text-center py-6">No posts scheduled this week</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {weekPosts.slice(0, 6).map((post) => (
@@ -188,7 +188,7 @@ export default function DashboardPanel() {
                   <div className="flex items-center gap-2 mt-0.5">
                     <PlatformIcon platform={post.platform} className="w-3 h-3 text-[var(--text-muted)]" />
                     <span className="text-[10px] text-[var(--text-muted)]">
-                      {new Date(post.scheduledDate).toLocaleDateString("es-MX", { weekday: "short", day: "numeric" })}
+                      {new Date(post.scheduledDate).toLocaleDateString("en-US", { weekday: "short", day: "numeric" })}
                     </span>
                     <span className={`text-[10px] px-1.5 py-0.5 rounded ${
                       post.status === "borrador" ? "status-draft" : post.status === "listo" ? "status-ready" : "status-published"

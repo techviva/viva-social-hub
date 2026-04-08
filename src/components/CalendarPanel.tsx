@@ -584,7 +584,7 @@ export default function CalendarPanel() {
                             <p className="text-xs text-[var(--text-muted)] truncate mt-0.5">{post.description}</p>
                             <div className="flex items-center gap-2 mt-1.5">
                               <span className={`text-[10px] px-1.5 py-0.5 rounded-md ${post.status === "borrador" ? "status-draft" : post.status === "listo" ? "status-ready" : "status-published"}`}>{post.status}</span>
-                              <span className="text-[10px] text-[var(--text-muted)] flex items-center gap-1"><ClockIcon className="w-3 h-3" />{new Date(post.scheduledDate).toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" })}</span>
+                              <span className="text-[10px] text-[var(--text-muted)] flex items-center gap-1"><ClockIcon className="w-3 h-3" />{new Date(post.scheduledDate).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}</span>
                             </div>
                           </div>
                           <button onClick={(e) => { e.stopPropagation(); startEdit(post); }} className="p-1.5 rounded-lg opacity-0 group-hover/card:opacity-100 hover:bg-[var(--accent-leaf)]/10 text-[var(--text-muted)] hover:text-[var(--viva-green-bright)] transition-all flex-shrink-0">

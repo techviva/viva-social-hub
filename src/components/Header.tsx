@@ -25,7 +25,7 @@ export default function Header({ onCreatePost }: HeaderProps) {
           className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[var(--viva-green)] to-[var(--accent-leaf)] text-[var(--bg-primary)] font-semibold text-sm hover:shadow-lg hover:shadow-[var(--accent-leaf)]/20 transition-all active:scale-95"
         >
           <SparklesIcon className="w-4 h-4" />
-          <span className="hidden sm:inline">Crear con AI</span>
+          <span className="hidden sm:inline">Create with AI</span>
         </button>
       </div>
     </header>

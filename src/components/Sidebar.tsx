@@ -10,13 +10,13 @@ interface SidebarProps {
 }
 
 const navItems: { key: Section; label: string; icon: React.ReactNode }[] = [
-  { key: "panel", label: "Panel", icon: <HomeIcon className="w-5 h-5" /> },
-  { key: "calendario", label: "Calendario", icon: <CalendarIcon className="w-5 h-5" /> },
-  { key: "borradores", label: "Borradores", icon: <EditIcon className="w-5 h-5" /> },
+  { key: "panel", label: "Dashboard", icon: <HomeIcon className="w-5 h-5" /> },
+  { key: "calendario", label: "Calendar", icon: <CalendarIcon className="w-5 h-5" /> },
+  { key: "borradores", label: "Drafts", icon: <EditIcon className="w-5 h-5" /> },
   { key: "ideas", label: "Ideas", icon: <LightbulbIcon className="w-5 h-5" /> },
-  { key: "guiones", label: "Guiones", icon: <ScriptIcon className="w-5 h-5" /> },
-  { key: "carruseles", label: "Carruseles", icon: <LayoutIcon className="w-5 h-5" /> },
-  { key: "metricas", label: "Metricas", icon: <BarChartIcon className="w-5 h-5" /> },
+  { key: "guiones", label: "Scripts", icon: <ScriptIcon className="w-5 h-5" /> },
+  { key: "carruseles", label: "Carousels", icon: <LayoutIcon className="w-5 h-5" /> },
+  { key: "metricas", label: "Metrics", icon: <BarChartIcon className="w-5 h-5" /> },
 ];
 
 export default function Sidebar({ active, onChange }: SidebarProps) {

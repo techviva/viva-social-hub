@@ -34,7 +34,7 @@ function StatusBadge({ status }: { status: Post["status"] }) {
 
 function formatDate(dateStr: string) {
   const d = new Date(dateStr);
-  return d.toLocaleDateString("es-MX", {
+  return d.toLocaleDateString("en-US", {
     day: "numeric",
     month: "short",
     year: "numeric",
@@ -43,7 +43,7 @@ function formatDate(dateStr: string) {
 
 function formatTime(dateStr: string) {
   const d = new Date(dateStr);
-  return d.toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" });
+  return d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
 }
 
 export function PostCardGrid({ post }: { post: Post }) {
