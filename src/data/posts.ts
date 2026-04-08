@@ -1,4 +1,4 @@
-export type Platform = "instagram" | "tiktok" | "youtube";
+export type Platform = "instagram" | "tiktok" | "youtube" | "igfb" | "gbp" | "web";
 export type PostStatus = "borrador" | "listo" | "publicado";
 
 export interface Post {

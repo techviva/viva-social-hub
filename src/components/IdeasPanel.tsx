@@ -30,7 +30,7 @@ function PlatformTag({ platform }: { platform: Idea["platform"] }) {
     tiktok: { icon: <TikTokIcon className="w-3 h-3" />, cls: "badge-tiktok" },
     youtube: { icon: <YouTubeIcon className="w-3 h-3" />, cls: "badge-youtube" },
   };
-  const c = config[platform];
+  const c = config[platform as keyof typeof config];
   return <span className={`inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-md ${c.cls}`}>{c.icon}{platform}</span>;
 }
 

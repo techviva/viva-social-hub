@@ -22,8 +22,10 @@ export async function POST(req: NextRequest) {
   let body;
   try { body = await req.json(); } catch { return NextResponse.json({ error: "Body invalido" }, { status: 400 }); }
 
-  const { prompt, platform } = body;
+  const { prompt, platform, channelType, batchIndex, batchTotal } = body;
   if (!prompt?.trim()) return NextResponse.json({ error: "Se necesita un prompt" }, { status: 400 });
+
+  const isBatch = (batchTotal || 1) > 1;
 
   const systemPrompt = `Eres un director creativo de agencia para Viva Landscape & Design, paisajismo premium en Phoenix, Arizona.
 
@@ -72,9 +74,12 @@ Responde UNICAMENTE con JSON puro.
   "tags": ["tag1", "tag2"]
 }`;
 
+  const channelLabel = channelType ? `Tipo: ${channelType}` : "";
+  const batchNote = isBatch ? `\nEste es el post ${(batchIndex || 0) + 1} de ${batchTotal}. CADA post debe ser COMPLETAMENTE DIFERENTE en: headline, angulo del copy, template elegido, variacion visual. No repitas conceptos ni frases.` : "";
+
   const userMessage = `Genera publicacion premium con direccion artistica sobre: "${prompt}"
-Plataforma: ${platform || "Instagram"}
-Timestamp para seed de variacion: ${Date.now()}`;
+Plataforma: ${platform || "igfb"} ${channelLabel}${batchNote}
+Seed: ${Date.now()}-${batchIndex || 0}`;
 
   try {
     const res = await fetch("https://api.anthropic.com/v1/messages", {

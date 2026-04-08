@@ -19,7 +19,7 @@ function PlatformIconSmall({ platform, className = "w-3 h-3" }: { platform: Plat
   return <YouTubeIcon className={className} />;
 }
 
-const platformColors: Record<Platform, string> = { instagram: "#e1306c", tiktok: "#00f2ea", youtube: "#ff4444" };
+const platformColors: Record<Platform, string> = { instagram: "#e1306c", tiktok: "#00f2ea", youtube: "#ff4444", igfb: "#e1306c", gbp: "#4285f4", web: "#7ab82e" };
 
 interface DrivePhoto {
   id: string;

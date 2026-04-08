@@ -9,7 +9,7 @@ function PlatformBadge({ platform }: { platform: Post["platform"] }) {
     tiktok: { icon: <TikTokIcon className="w-3.5 h-3.5" />, className: "badge-tiktok" },
     youtube: { icon: <YouTubeIcon className="w-3.5 h-3.5" />, className: "badge-youtube" },
   };
-  const c = config[platform];
+  const c = config[platform as keyof typeof config] || config.instagram;
   return (
     <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium ${c.className}`}>
       {c.icon}
