@@ -45,19 +45,19 @@ interface VisualStyle {
 
 const STYLES: VisualStyle[] = [
   {
-    key: "gold-dark",
-    name: "Gold Premium",
+    key: "viva-green",
+    name: "Viva Green",
     bg: "linear-gradient(160deg, #0a0a0f, #1a1a2e)",
     coverBg: "linear-gradient(160deg, #1a1510, #0a0a0f)",
     ctaBg: "linear-gradient(160deg, #1a1510, #12121a)",
-    headlineColor: "#f0d078",
+    headlineColor: "#8fd440",
     bodyColor: "#c8c8d8",
     subtextColor: "#9898a8",
-    accentColor: "#d4a843",
-    numberBg: "#d4a843",
+    accentColor: "#7ab82e",
+    numberBg: "#7ab82e",
     numberColor: "#0a0a0f",
     fontClass: "font-sans",
-    preview: "linear-gradient(135deg, #d4a843, #0a0a0f)",
+    preview: "linear-gradient(135deg, #7ab82e, #0a0a0f)",
   },
   {
     key: "green-nature",
@@ -95,7 +95,7 @@ const STYLES: VisualStyle[] = [
     bg: "linear-gradient(160deg, #1a1210, #1f1510)",
     coverBg: "linear-gradient(160deg, #2a1a14, #1a1210)",
     ctaBg: "linear-gradient(160deg, #2a1a14, #1a1210)",
-    headlineColor: "#fbbf6e",
+    headlineColor: "#7ab82e",
     bodyColor: "#dcc4a8",
     subtextColor: "#a07850",
     accentColor: "#e87e3c",
@@ -292,7 +292,7 @@ export default function CarouselPanel() {
   const [showGenerator, setShowGenerator] = useState(false);
   const [topic, setTopic] = useState("");
   const [slideCount, setSlideCount] = useState(7);
-  const [selectedStyle, setSelectedStyle] = useState("gold-dark");
+  const [selectedStyle, setSelectedStyle] = useState("viva-green");
   const [notes, setNotes] = useState("");
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState("");
@@ -497,7 +497,7 @@ export default function CarouselPanel() {
         </div>
         <button
           onClick={() => { setShowGenerator(true); setActiveCarousel(null); setError(""); }}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[var(--gold-dark)] to-[var(--gold-primary)] text-[var(--bg-primary)] font-semibold text-sm hover:shadow-lg hover:shadow-[var(--gold-primary)]/20 transition-all active:scale-95"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[var(--viva-green)] to-[var(--accent-leaf)] text-[var(--bg-primary)] font-semibold text-sm hover:shadow-lg hover:shadow-[var(--accent-leaf)]/20 transition-all active:scale-95"
         >
           <SparklesIcon className="w-4 h-4" />
           <span className="hidden sm:inline">Nuevo Carrusel</span>
@@ -506,10 +506,10 @@ export default function CarouselPanel() {
 
       {/* ═══════ GENERATOR ═══════ */}
       {showGenerator && (
-        <div className="animate-fade-up rounded-2xl border border-[var(--border-gold)] bg-gradient-to-br from-[var(--gold-primary)]/5 to-[var(--bg-card)] p-5 md:p-6 space-y-4">
+        <div className="animate-fade-up rounded-2xl border border-[var(--border-accent)] bg-gradient-to-br from-[var(--accent-leaf)]/5 to-[var(--bg-card)] p-5 md:p-6 space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="p-2 rounded-xl bg-[var(--gold-primary)]/10"><SparklesIcon className="w-5 h-5 text-[var(--gold-light)]" /></div>
+              <div className="p-2 rounded-xl bg-[var(--accent-leaf)]/10"><SparklesIcon className="w-5 h-5 text-[var(--viva-green-bright)]" /></div>
               <div>
                 <h3 className="text-sm font-bold text-[var(--text-primary)]">Generador de Carruseles</h3>
                 <p className="text-xs text-[var(--text-muted)]">Describe el tema y elige el estilo visual</p>
@@ -528,7 +528,7 @@ export default function CarouselPanel() {
               onChange={(e) => setTopic(e.target.value)}
               placeholder='Ej: "7 pasos para diseñar tu patio ideal" o "Turf sintetico: mitos vs realidad"'
               rows={2}
-              className="w-full px-4 py-3 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--gold-primary)] focus:ring-1 focus:ring-[var(--gold-primary)]/30 transition-all resize-none"
+              className="w-full px-4 py-3 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-leaf)] focus:ring-1 focus:ring-[var(--accent-leaf)]/30 transition-all resize-none"
             />
           </div>
 
@@ -542,7 +542,7 @@ export default function CarouselPanel() {
                 max={12}
                 value={slideCount}
                 onChange={(e) => setSlideCount(Number(e.target.value))}
-                className="w-full accent-[var(--gold-primary)]"
+                className="w-full accent-[var(--accent-leaf)]"
               />
               <div className="flex justify-between text-[10px] text-[var(--text-muted)]"><span>4</span><span>12</span></div>
             </div>
@@ -553,7 +553,7 @@ export default function CarouselPanel() {
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Ej: enfocarse en ahorro de agua..."
-                className="w-full px-4 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--gold-primary)] focus:ring-1 focus:ring-[var(--gold-primary)]/30 transition-all"
+                className="w-full px-4 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-leaf)] focus:ring-1 focus:ring-[var(--accent-leaf)]/30 transition-all"
               />
             </div>
           </div>
@@ -567,7 +567,7 @@ export default function CarouselPanel() {
                   key={s.key}
                   onClick={() => setSelectedStyle(s.key)}
                   className={`rounded-xl overflow-hidden border-2 transition-all ${
-                    selectedStyle === s.key ? "border-[var(--gold-primary)] shadow-lg shadow-[var(--gold-primary)]/15 scale-105" : "border-transparent hover:border-[var(--border-color)]"
+                    selectedStyle === s.key ? "border-[var(--accent-leaf)] shadow-lg shadow-[var(--accent-leaf)]/15 scale-105" : "border-transparent hover:border-[var(--border-color)]"
                   }`}
                 >
                   <div className="aspect-square rounded-lg" style={{ background: s.preview }} />
@@ -582,7 +582,7 @@ export default function CarouselPanel() {
           <button
             onClick={generate}
             disabled={!topic.trim() || generating}
-            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-[var(--gold-dark)] to-[var(--gold-primary)] text-[var(--bg-primary)] font-bold text-sm disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-[var(--gold-primary)]/25 transition-all active:scale-[0.98]"
+            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-[var(--viva-green)] to-[var(--accent-leaf)] text-[var(--bg-primary)] font-bold text-sm disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-[var(--accent-leaf)]/25 transition-all active:scale-[0.98]"
           >
             {generating ? (
               <><span className="w-4 h-4 border-2 border-[var(--bg-primary)]/30 border-t-[var(--bg-primary)] rounded-full animate-spin" />Generando carrusel{dots}</>
@@ -598,7 +598,7 @@ export default function CarouselPanel() {
         <div className="animate-fade-up space-y-5">
           {/* Back + Actions */}
           <div className="flex items-center justify-between flex-wrap gap-2">
-            <button onClick={() => { setActiveCarousel(null); setEditingSlide(null); }} className="text-xs text-[var(--text-muted)] hover:text-[var(--gold-light)] transition-all flex items-center gap-1">
+            <button onClick={() => { setActiveCarousel(null); setEditingSlide(null); }} className="text-xs text-[var(--text-muted)] hover:text-[var(--viva-green-bright)] transition-all flex items-center gap-1">
               <ChevronRightIcon className="w-3 h-3 rotate-180" />Volver a la biblioteca
             </button>
             <div className="flex items-center gap-2">
@@ -613,12 +613,12 @@ export default function CarouselPanel() {
                       setCarousels((prev) => prev.map((c) => c.id === updated.id ? updated : c));
                     }}
                     title={s.name}
-                    className={`w-5 h-5 rounded-md transition-all ${activeCarousel.style === s.key ? "ring-2 ring-[var(--gold-primary)] scale-110" : "opacity-60 hover:opacity-100"}`}
+                    className={`w-5 h-5 rounded-md transition-all ${activeCarousel.style === s.key ? "ring-2 ring-[var(--accent-leaf)] scale-110" : "opacity-60 hover:opacity-100"}`}
                     style={{ background: s.preview }}
                   />
                 ))}
               </div>
-              <button onClick={downloadAll} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--bg-secondary)] text-[var(--text-muted)] border border-[var(--border-color)] hover:border-[var(--border-gold)] hover:text-[var(--gold-light)] transition-all">
+              <button onClick={downloadAll} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--bg-secondary)] text-[var(--text-muted)] border border-[var(--border-color)] hover:border-[var(--border-accent)] hover:text-[var(--viva-green-bright)] transition-all">
                 <DownloadIcon className="w-3.5 h-3.5" />Descargar todo
               </button>
               <button onClick={() => deleteCarousel(activeCarousel.id)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-red-400/60 hover:text-red-400 hover:bg-red-400/5 transition-all">
@@ -628,7 +628,7 @@ export default function CarouselPanel() {
           </div>
 
           {/* Title */}
-          <div className="rounded-2xl border border-[var(--border-gold)] bg-gradient-to-br from-[var(--gold-primary)]/5 to-[var(--bg-card)] p-4">
+          <div className="rounded-2xl border border-[var(--border-accent)] bg-gradient-to-br from-[var(--accent-leaf)]/5 to-[var(--bg-card)] p-4">
             <h3 className="text-base font-bold text-gold-gradient">{activeCarousel.title}</h3>
             <p className="text-xs text-[var(--text-muted)] mt-0.5">{activeCarousel.slides.length} filminas &middot; Tema: {activeCarousel.topic}</p>
           </div>
@@ -662,7 +662,7 @@ export default function CarouselPanel() {
               </button>
               <button
                 onClick={() => downloadSlide(activeSlide)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-[var(--gold-light)] hover:bg-[var(--gold-primary)]/10 transition-all"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-[var(--viva-green-bright)] hover:bg-[var(--accent-leaf)]/10 transition-all"
               >
                 <DownloadIcon className="w-3.5 h-3.5" />PNG
               </button>
@@ -684,7 +684,7 @@ export default function CarouselPanel() {
                   key={idx}
                   onClick={() => { setActiveSlide(idx); setEditingSlide(null); }}
                   className={`flex-shrink-0 w-24 md:w-28 rounded-xl overflow-hidden border-2 transition-all ${
-                    activeSlide === idx ? "border-[var(--gold-primary)] shadow-lg shadow-[var(--gold-primary)]/10 scale-105" : "border-[var(--border-color)] opacity-60 hover:opacity-100"
+                    activeSlide === idx ? "border-[var(--accent-leaf)] shadow-lg shadow-[var(--accent-leaf)]/10 scale-105" : "border-[var(--border-color)] opacity-60 hover:opacity-100"
                   }`}
                 >
                   <div
@@ -716,14 +716,14 @@ export default function CarouselPanel() {
         <>
           {carousels.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-center animate-fade-up">
-              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[var(--gold-primary)]/10 to-[var(--bg-card)] border border-[var(--border-gold)] flex items-center justify-center mb-4">
-                <LayoutIcon className="w-8 h-8 text-[var(--gold-light)]" />
+              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[var(--accent-leaf)]/10 to-[var(--bg-card)] border border-[var(--border-accent)] flex items-center justify-center mb-4">
+                <LayoutIcon className="w-8 h-8 text-[var(--viva-green-bright)]" />
               </div>
               <p className="text-[var(--text-secondary)] font-semibold text-base">Sin carruseles todavia</p>
               <p className="text-sm text-[var(--text-muted)] mt-1 max-w-sm">Genera tu primer carrusel con AI. Elige el tema, el estilo y descarga las filminas listas.</p>
               <button
                 onClick={() => setShowGenerator(true)}
-                className="mt-5 flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[var(--gold-dark)] to-[var(--gold-primary)] text-[var(--bg-primary)] font-semibold text-sm hover:shadow-lg hover:shadow-[var(--gold-primary)]/20 transition-all active:scale-95"
+                className="mt-5 flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[var(--viva-green)] to-[var(--accent-leaf)] text-[var(--bg-primary)] font-semibold text-sm hover:shadow-lg hover:shadow-[var(--accent-leaf)]/20 transition-all active:scale-95"
               >
                 <SparklesIcon className="w-4 h-4" />Crear Primer Carrusel
               </button>
@@ -738,7 +738,7 @@ export default function CarouselPanel() {
                     <button
                       key={car.id}
                       onClick={() => { setActiveCarousel(car); setActiveSlide(0); setEditingSlide(null); }}
-                      className="animate-fade-up stagger text-left rounded-2xl border border-[var(--border-color)] overflow-hidden hover:border-[var(--border-gold)] hover:shadow-lg hover:shadow-[var(--gold-primary)]/5 transition-all group"
+                      className="animate-fade-up stagger text-left rounded-2xl border border-[var(--border-color)] overflow-hidden hover:border-[var(--border-accent)] hover:shadow-lg hover:shadow-[var(--accent-leaf)]/5 transition-all group"
                       style={{ "--i": idx } as React.CSSProperties}
                     >
                       {/* Mini preview of first 3 slides */}
@@ -750,7 +750,7 @@ export default function CarouselPanel() {
                         ))}
                       </div>
                       <div className="p-3 bg-[var(--bg-card)]/40">
-                        <h4 className="text-sm font-semibold text-[var(--text-primary)] group-hover:text-[var(--gold-light)] transition-colors truncate">{car.title}</h4>
+                        <h4 className="text-sm font-semibold text-[var(--text-primary)] group-hover:text-[var(--viva-green-bright)] transition-colors truncate">{car.title}</h4>
                         <div className="flex items-center gap-2 mt-1.5">
                           <span className="text-[10px] text-[var(--text-muted)]">{car.slides.length} filminas</span>
                           <span className="w-3 h-3 rounded-sm" style={{ background: st.preview }} />

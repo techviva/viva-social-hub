@@ -101,12 +101,12 @@ export default function MetricsPanel() {
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
 
         {/* 1 — Seguidores Totales */}
-        <div className="animate-fade-up stagger animate-glow-pulse rounded-2xl p-5 border border-[var(--border-gold)] bg-gradient-to-br from-[var(--gold-primary)]/8 to-[var(--bg-card)]" style={{ "--i": 1 } as React.CSSProperties}>
+        <div className="animate-fade-up stagger animate-glow-pulse rounded-2xl p-5 border border-[var(--border-accent)] bg-gradient-to-br from-[var(--accent-leaf)]/8 to-[var(--bg-card)]" style={{ "--i": 1 } as React.CSSProperties}>
           <div className="flex items-center justify-between mb-3">
-            <div className="p-2 rounded-xl bg-[var(--gold-primary)]/10">
-              <UsersIcon className="w-5 h-5 text-[var(--gold-light)]" />
+            <div className="p-2 rounded-xl bg-[var(--accent-leaf)]/10">
+              <UsersIcon className="w-5 h-5 text-[var(--viva-green-bright)]" />
             </div>
-            <MiniSparkline data={dailyMetrics.map((d) => d.followers)} color="var(--gold-light)" />
+            <MiniSparkline data={dailyMetrics.map((d) => d.followers)} color="var(--viva-green-bright)" />
           </div>
           <p className="text-[11px] uppercase tracking-widest text-[var(--text-muted)] mb-1">Seguidores Totales</p>
           <p className="text-4xl md:text-5xl font-extrabold text-gold-gradient animate-count-pulse">{fmt(totalFollowers)}</p>
@@ -140,17 +140,17 @@ export default function MetricsPanel() {
         </div>
 
         {/* 4 — Mejor Post de la Semana */}
-        <div className="animate-fade-up stagger rounded-2xl overflow-hidden border border-[var(--border-gold)] bg-gradient-to-br from-[var(--gold-primary)]/5 to-[var(--bg-card)] relative group" style={{ "--i": 4 } as React.CSSProperties}>
+        <div className="animate-fade-up stagger rounded-2xl overflow-hidden border border-[var(--border-accent)] bg-gradient-to-br from-[var(--accent-leaf)]/5 to-[var(--bg-card)] relative group" style={{ "--i": 4 } as React.CSSProperties}>
           <div className="absolute inset-0">
             <img src={bestPostOfWeek.image} alt="" className="w-full h-full object-cover opacity-20 group-hover:opacity-30 transition-opacity duration-700" />
             <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-card)] via-[var(--bg-card)]/80 to-transparent" />
           </div>
           <div className="relative p-5 flex flex-col h-full">
             <div className="flex items-center gap-2 mb-2">
-              <div className="p-2 rounded-xl bg-[var(--gold-primary)]/10">
-                <FireIcon className="w-5 h-5 text-[var(--gold-light)]" />
+              <div className="p-2 rounded-xl bg-[var(--accent-leaf)]/10">
+                <FireIcon className="w-5 h-5 text-[var(--viva-green-bright)]" />
               </div>
-              <span className="text-[10px] uppercase tracking-widest text-[var(--gold-light)] font-semibold">Mejor Post</span>
+              <span className="text-[10px] uppercase tracking-widest text-[var(--viva-green-bright)] font-semibold">Mejor Post</span>
             </div>
             <p className="text-sm font-semibold text-[var(--text-primary)] mb-1 line-clamp-2">{bestPostOfWeek.title}</p>
             <div className="flex items-center gap-1 mb-auto">
@@ -187,7 +187,7 @@ export default function MetricsPanel() {
               <p className="text-xs text-[var(--text-muted)]">Visualizaciones y seguidores diarios</p>
             </div>
             <div className="flex items-center gap-4 text-xs text-[var(--text-muted)]">
-              <span className="flex items-center gap-1.5"><span className="w-2.5 h-0.5 rounded-full bg-[var(--gold-light)]" />Seguidores</span>
+              <span className="flex items-center gap-1.5"><span className="w-2.5 h-0.5 rounded-full bg-[var(--viva-green-bright)]" />Seguidores</span>
               <span className="flex items-center gap-1.5"><span className="w-2.5 h-0.5 rounded-full bg-[#86efac]" />Views</span>
             </div>
           </div>
@@ -196,8 +196,8 @@ export default function MetricsPanel() {
             <svg viewBox={`0 0 ${chartW} ${chartH}`} className="w-full min-w-[400px] h-auto" preserveAspectRatio="xMidYMid meet">
               <defs>
                 <linearGradient id="goldArea" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="var(--gold-light)" stopOpacity="0.25" />
-                  <stop offset="100%" stopColor="var(--gold-light)" stopOpacity="0" />
+                  <stop offset="0%" stopColor="var(--viva-green-bright)" stopOpacity="0.25" />
+                  <stop offset="100%" stopColor="var(--viva-green-bright)" stopOpacity="0" />
                 </linearGradient>
                 <linearGradient id="greenArea" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="#86efac" stopOpacity="0.18" />
@@ -232,11 +232,11 @@ export default function MetricsPanel() {
 
               {/* Followers area + line */}
               <path d={areaPath(followersLine)} fill="url(#goldArea)" className="animate-fill-area" style={{ animationDelay: "0.5s" }} />
-              <polyline points={polyline(followersLine)} fill="none" stroke="var(--gold-light)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" filter="url(#glow)" className="animate-draw-line" style={{ animationDelay: "0.4s" }} />
+              <polyline points={polyline(followersLine)} fill="none" stroke="var(--viva-green-bright)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" filter="url(#glow)" className="animate-draw-line" style={{ animationDelay: "0.4s" }} />
 
               {/* Dots on followers — every 5th */}
               {followersLine.filter((_, i) => i % 5 === 0).map((p, idx) => (
-                <circle key={`fd-${idx}`} cx={p.x} cy={p.y} r="4" fill="var(--gold-light)" stroke="var(--bg-card)" strokeWidth="2" className="animate-dot-pop" style={{ animationDelay: `${0.8 + idx * 0.1}s` }} />
+                <circle key={`fd-${idx}`} cx={p.x} cy={p.y} r="4" fill="var(--viva-green-bright)" stroke="var(--bg-card)" strokeWidth="2" className="animate-dot-pop" style={{ animationDelay: `${0.8 + idx * 0.1}s` }} />
               ))}
 
               {/* Dots on views — every 5th */}

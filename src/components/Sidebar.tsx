@@ -31,7 +31,7 @@ export default function Sidebar({ active, onChange }: SidebarProps) {
               onClick={() => onChange(item.key)}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
                 active === item.key
-                  ? "bg-[var(--gold-primary)]/10 text-[var(--gold-light)] border border-[var(--border-gold)] shadow-sm shadow-[var(--gold-primary)]/5"
+                  ? "bg-[var(--accent-leaf)]/10 text-[var(--viva-green-bright)] border border-[var(--border-accent)] shadow-sm shadow-[var(--accent-leaf)]/5"
                   : "text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--bg-card)]/50"
               }`}
             >
@@ -51,14 +51,14 @@ export default function Sidebar({ active, onChange }: SidebarProps) {
               onClick={() => onChange(item.key)}
               className={`flex flex-col items-center gap-0.5 px-1.5 py-1.5 rounded-lg transition-all min-w-[44px] ${
                 active === item.key
-                  ? "text-[var(--gold-light)]"
+                  ? "text-[var(--viva-green-bright)]"
                   : "text-[var(--text-muted)]"
               }`}
             >
               {item.icon}
               <span className="text-[8px] font-medium">{item.label}</span>
               {active === item.key && (
-                <div className="w-1 h-1 rounded-full bg-[var(--gold-primary)]" />
+                <div className="w-1 h-1 rounded-full bg-[var(--accent-leaf)]" />
               )}
             </button>
           ))}

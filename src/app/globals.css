@@ -1,21 +1,46 @@
 @import "tailwindcss";
 
+/* ══════════════════════════════════════════
+   VIVA LANDSCAPE & DESIGN — Brand Palette
+   Source: vivalandscapeanddesign.com
+   Theme: Dark mode with Viva brand greens
+   ══════════════════════════════════════════ */
+
 :root {
-  --bg-primary: #0a0a0f;
-  --bg-secondary: #12121a;
-  --bg-card: #1a1a2e;
-  --bg-card-hover: #22223a;
-  --gold-primary: #d4a843;
-  --gold-light: #f0d078;
-  --gold-dark: #b8922e;
-  --text-primary: #f0f0f5;
-  --text-secondary: #9898a8;
-  --text-muted: #6a6a7a;
-  --border-color: #2a2a3e;
-  --border-gold: rgba(212, 168, 67, 0.3);
+  /* Backgrounds — deep forest dark */
+  --bg-primary: #141a10;
+  --bg-secondary: #1a2016;
+  --bg-card: #232d1e;
+  --bg-card-hover: #2c3824;
+
+  /* Brand greens */
+  --viva-green: #3c4a30;
+  --viva-green-light: #4d6340;
+  --viva-green-bright: #7ab82e;
+  --viva-green-muted: #3a4234;
+
+  /* Accent colors */
+  --accent-leaf: #7ab82e;
+  --accent-earth: #795220;
+  --accent-earth-light: #a07a40;
+  --accent-cream: #e3e3d2;
+  --accent-star: #f0c432;
+
+  /* Text */
+  --text-primary: #eaeadc;
+  --text-secondary: #a0a890;
+  --text-muted: #687060;
+
+  /* Borders */
+  --border-color: #2e3828;
+  --border-accent: rgba(122, 184, 46, 0.25);
+
+  /* Status */
   --status-draft: #6366f1;
-  --status-ready: #22c55e;
-  --status-published: #d4a843;
+  --status-ready: #7ab82e;
+  --status-published: #3c4a30;
+
+  /* Platform */
   --instagram-color: #e1306c;
   --tiktok-color: #00f2ea;
   --youtube-color: #ff0000;
@@ -30,7 +55,7 @@
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--gold-dark) var(--bg-secondary);
+  scrollbar-color: var(--viva-green) var(--bg-secondary);
 }
 
 body {
@@ -39,84 +64,84 @@ body {
   font-family: var(--font-sans), system-ui, sans-serif;
 }
 
-/* Gold gradient text utility */
+/* Brand gradient text */
 .text-gold-gradient {
-  background: linear-gradient(135deg, var(--gold-light), var(--gold-primary), var(--gold-dark));
+  background: linear-gradient(135deg, var(--accent-leaf), var(--viva-green-bright), var(--viva-green-light));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-/* Card glass effect */
+/* Card glass — forest dark glass */
 .card-glass {
-  background: linear-gradient(145deg, rgba(26, 26, 46, 0.8), rgba(18, 18, 26, 0.9));
+  background: linear-gradient(145deg, rgba(35, 45, 30, 0.8), rgba(26, 32, 22, 0.9));
   backdrop-filter: blur(12px);
   border: 1px solid var(--border-color);
   transition: all 0.3s ease;
 }
 
 .card-glass:hover {
-  border-color: var(--border-gold);
-  box-shadow: 0 0 20px rgba(212, 168, 67, 0.08);
+  border-color: var(--border-accent);
+  box-shadow: 0 0 20px rgba(122, 184, 46, 0.06);
   transform: translateY(-2px);
 }
 
-/* Gold shimmer animation */
+/* Brand shimmer — green pulse */
 @keyframes shimmer {
   0% { background-position: -200% center; }
   100% { background-position: 200% center; }
 }
 
 .gold-shimmer {
-  background: linear-gradient(90deg, var(--gold-dark), var(--gold-light), var(--gold-primary), var(--gold-light), var(--gold-dark));
+  background: linear-gradient(90deg, var(--viva-green), var(--viva-green-bright), var(--accent-leaf), var(--viva-green-bright), var(--viva-green));
   background-size: 200% auto;
   animation: shimmer 3s linear infinite;
 }
 
-/* Stat card glow */
+/* Stat glow — green */
 .stat-glow {
-  box-shadow: 0 0 30px rgba(212, 168, 67, 0.06);
+  box-shadow: 0 0 30px rgba(122, 184, 46, 0.05);
 }
 
-/* Platform badge colors */
+/* Platform badges */
 .badge-instagram {
-  background: rgba(225, 48, 108, 0.15);
+  background: rgba(225, 48, 108, 0.12);
   color: #e1306c;
-  border: 1px solid rgba(225, 48, 108, 0.3);
+  border: 1px solid rgba(225, 48, 108, 0.25);
 }
 
 .badge-tiktok {
-  background: rgba(0, 242, 234, 0.1);
+  background: rgba(0, 242, 234, 0.08);
   color: #00f2ea;
-  border: 1px solid rgba(0, 242, 234, 0.25);
+  border: 1px solid rgba(0, 242, 234, 0.2);
 }
 
 .badge-youtube {
-  background: rgba(255, 0, 0, 0.12);
+  background: rgba(255, 0, 0, 0.1);
   color: #ff4444;
-  border: 1px solid rgba(255, 0, 0, 0.25);
+  border: 1px solid rgba(255, 0, 0, 0.2);
 }
 
 /* Status badges */
 .status-draft {
-  background: rgba(99, 102, 241, 0.15);
+  background: rgba(99, 102, 241, 0.12);
   color: #818cf8;
-  border: 1px solid rgba(99, 102, 241, 0.3);
+  border: 1px solid rgba(99, 102, 241, 0.25);
 }
 
 .status-ready {
-  background: rgba(34, 197, 94, 0.12);
-  color: #4ade80;
-  border: 1px solid rgba(34, 197, 94, 0.25);
+  background: rgba(122, 184, 46, 0.12);
+  color: #7ab82e;
+  border: 1px solid rgba(122, 184, 46, 0.25);
 }
 
 .status-published {
-  background: rgba(212, 168, 67, 0.15);
-  color: var(--gold-light);
-  border: 1px solid var(--border-gold);
+  background: rgba(60, 74, 48, 0.3);
+  color: var(--accent-leaf);
+  border: 1px solid var(--border-accent);
 }
 
-/* ── Metrics Animations ── */
+/* ── Animations ── */
 
 @keyframes fadeSlideUp {
   from { opacity: 0; transform: translateY(24px); }
@@ -150,8 +175,8 @@ body {
 }
 
 @keyframes glowPulse {
-  0%, 100% { box-shadow: 0 0 20px rgba(212, 168, 67, 0.05); }
-  50%      { box-shadow: 0 0 40px rgba(212, 168, 67, 0.15); }
+  0%, 100% { box-shadow: 0 0 20px rgba(122, 184, 46, 0.04); }
+  50%      { box-shadow: 0 0 40px rgba(122, 184, 46, 0.12); }
 }
 
 @keyframes dotPop {
@@ -160,41 +185,15 @@ body {
   100% { transform: scale(1); opacity: 1; }
 }
 
-.animate-fade-up {
-  animation: fadeSlideUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
+.animate-fade-up { animation: fadeSlideUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-fade-left { animation: fadeSlideLeft 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-count-pulse { animation: countPulse 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-draw-line { stroke-dasharray: 2000; animation: drawLine 1.8s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-fill-area { animation: fillArea 1.2s ease both; }
+.animate-bar-grow { transform-origin: left center; animation: barGrow 0.8s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-glow-pulse { animation: glowPulse 3s ease-in-out infinite; }
+.animate-dot-pop { animation: dotPop 0.4s cubic-bezier(0.22, 1, 0.36, 1) both; }
 
-.animate-fade-left {
-  animation: fadeSlideLeft 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.animate-count-pulse {
-  animation: countPulse 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.animate-draw-line {
-  stroke-dasharray: 2000;
-  animation: drawLine 1.8s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.animate-fill-area {
-  animation: fillArea 1.2s ease both;
-}
-
-.animate-bar-grow {
-  transform-origin: left center;
-  animation: barGrow 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.animate-glow-pulse {
-  animation: glowPulse 3s ease-in-out infinite;
-}
-
-.animate-dot-pop {
-  animation: dotPop 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-/* Stagger utility — pair with [style="--i:N"] */
 .stagger { animation-delay: calc(var(--i, 0) * 120ms); }
 
 /* ── Calendar ── */
@@ -219,27 +218,13 @@ body {
   100% { opacity: 1; transform: scale(1); }
 }
 
-.animate-slide-in-right {
-  animation: slideInRight 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
+.animate-slide-in-right { animation: slideInRight 0.35s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-slide-out-right { animation: slideOutRight 0.25s cubic-bezier(0.55, 0, 1, 0.45) both; }
+.animate-overlay-in { animation: overlayFadeIn 0.25s ease both; }
+.animate-cal-cell { animation: calCellPop 0.35s cubic-bezier(0.22, 1, 0.36, 1) both; }
 
-.animate-slide-out-right {
-  animation: slideOutRight 0.25s cubic-bezier(0.55, 0, 1, 0.45) both;
-}
-
-.animate-overlay-in {
-  animation: overlayFadeIn 0.25s ease both;
-}
-
-.animate-cal-cell {
-  animation: calCellPop 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-/* today ring pulse */
 @keyframes todayPulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(212, 168, 67, 0.5); }
-  50%      { box-shadow: 0 0 0 6px rgba(212, 168, 67, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(122, 184, 46, 0.5); }
+  50%      { box-shadow: 0 0 0 6px rgba(122, 184, 46, 0); }
 }
-.animate-today-pulse {
-  animation: todayPulse 2.5s ease-in-out infinite;
-}
+.animate-today-pulse { animation: todayPulse 2.5s ease-in-out infinite; }

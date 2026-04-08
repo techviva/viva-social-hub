@@ -9,7 +9,7 @@ export default function StatsBar() {
   const published = posts.filter((p) => p.status === "publicado").length;
 
   const stats = [
-    { label: "Total Posts", value: total, color: "var(--gold-primary)" },
+    { label: "Total Posts", value: total, color: "var(--accent-leaf)" },
     { label: "Borradores", value: drafts, color: "var(--status-draft)" },
     { label: "Listos", value: ready, color: "var(--status-ready)" },
     { label: "Publicados", value: published, color: "var(--status-published)" },

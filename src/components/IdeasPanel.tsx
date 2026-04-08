@@ -13,7 +13,7 @@ interface Idea {
 }
 
 const COLORS = [
-  "from-[#d4a843]/20 to-[#b8922e]/10",
+  "from-[#7ab82e]/20 to-[#3c4a30]/10",
   "from-[#6366f1]/20 to-[#4f46e5]/10",
   "from-[#e1306c]/20 to-[#c13584]/10",
   "from-[#00f2ea]/15 to-[#00c4cc]/10",
@@ -24,7 +24,7 @@ const COLORS = [
 const STORAGE_KEY = "viva-social-hub-ideas";
 
 function PlatformTag({ platform }: { platform: Idea["platform"] }) {
-  if (platform === "general") return <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-[var(--gold-primary)]/10 text-[var(--gold-light)] border border-[var(--border-gold)]">General</span>;
+  if (platform === "general") return <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-[var(--accent-leaf)]/10 text-[var(--viva-green-bright)] border border-[var(--border-accent)]">General</span>;
   const config = {
     instagram: { icon: <InstagramIcon className="w-3 h-3" />, cls: "badge-instagram" },
     tiktok: { icon: <TikTokIcon className="w-3 h-3" />, cls: "badge-tiktok" },
@@ -95,7 +95,7 @@ export default function IdeasPanel() {
             onKeyDown={handleKeyDown}
             placeholder="Escribe tu idea aqui... (Enter para guardar)"
             rows={3}
-            className="w-full px-4 py-3 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--gold-primary)] focus:ring-1 focus:ring-[var(--gold-primary)]/30 transition-all resize-none"
+            className="w-full px-4 py-3 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-leaf)] focus:ring-1 focus:ring-[var(--accent-leaf)]/30 transition-all resize-none"
           />
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -106,7 +106,7 @@ export default function IdeasPanel() {
                   className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
                     newPlatform === p
                       ? p === "general"
-                        ? "bg-[var(--gold-primary)]/15 text-[var(--gold-light)] border border-[var(--border-gold)]"
+                        ? "bg-[var(--accent-leaf)]/15 text-[var(--viva-green-bright)] border border-[var(--border-accent)]"
                         : p === "instagram"
                         ? "badge-instagram"
                         : p === "tiktok"
@@ -122,7 +122,7 @@ export default function IdeasPanel() {
             <button
               onClick={addIdea}
               disabled={!newIdea.trim()}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-[var(--gold-dark)] to-[var(--gold-primary)] text-[var(--bg-primary)] font-semibold text-sm disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-[var(--gold-primary)]/20 transition-all active:scale-95"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-[var(--viva-green)] to-[var(--accent-leaf)] text-[var(--bg-primary)] font-semibold text-sm disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-[var(--accent-leaf)]/20 transition-all active:scale-95"
             >
               <PlusIcon className="w-4 h-4" />
               Guardar
@@ -145,7 +145,7 @@ export default function IdeasPanel() {
           {ideas.map((idea) => (
             <div
               key={idea.id}
-              className={`group relative rounded-2xl p-4 border border-[var(--border-color)] bg-gradient-to-br ${idea.color} hover:border-[var(--border-gold)] transition-all`}
+              className={`group relative rounded-2xl p-4 border border-[var(--border-color)] bg-gradient-to-br ${idea.color} hover:border-[var(--border-accent)] transition-all`}
             >
               <button
                 onClick={() => removeIdea(idea.id)}

@@ -44,8 +44,8 @@ export default function FilterBar({
             onClick={() => onPlatformChange(p.key)}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
               activePlatform === p.key
-                ? "bg-[var(--gold-primary)]/15 text-[var(--gold-light)] border border-[var(--border-gold)]"
-                : "bg-[var(--bg-secondary)] text-[var(--text-muted)] border border-[var(--border-color)] hover:border-[var(--border-gold)] hover:text-[var(--text-secondary)]"
+                ? "bg-[var(--accent-leaf)]/15 text-[var(--viva-green-bright)] border border-[var(--border-accent)]"
+                : "bg-[var(--bg-secondary)] text-[var(--text-muted)] border border-[var(--border-color)] hover:border-[var(--border-accent)] hover:text-[var(--text-secondary)]"
             }`}
           >
             {p.icon}
@@ -69,7 +69,7 @@ export default function FilterBar({
                     ? "status-ready"
                     : s.key === "publicado"
                     ? "status-published"
-                    : "bg-[var(--gold-primary)]/15 text-[var(--gold-light)] border border-[var(--border-gold)]"
+                    : "bg-[var(--accent-leaf)]/15 text-[var(--viva-green-bright)] border border-[var(--border-accent)]"
                   : "text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
               }`}
             >
@@ -84,7 +84,7 @@ export default function FilterBar({
             onClick={() => onViewModeChange("grid")}
             className={`p-1.5 rounded-md transition-all ${
               viewMode === "grid"
-                ? "bg-[var(--gold-primary)]/15 text-[var(--gold-light)]"
+                ? "bg-[var(--accent-leaf)]/15 text-[var(--viva-green-bright)]"
                 : "text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
             }`}
           >
@@ -94,7 +94,7 @@ export default function FilterBar({
             onClick={() => onViewModeChange("list")}
             className={`p-1.5 rounded-md transition-all ${
               viewMode === "list"
-                ? "bg-[var(--gold-primary)]/15 text-[var(--gold-light)]"
+                ? "bg-[var(--accent-leaf)]/15 text-[var(--viva-green-bright)]"
                 : "text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
             }`}
           >

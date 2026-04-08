@@ -54,7 +54,7 @@ function PlatformLabel({ platform }: { platform: string }) {
     return <span className="badge-tiktok inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-md"><TikTokIcon className="w-3 h-3" />TikTok</span>;
   if (lower.includes("youtube") || lower.includes("yt"))
     return <span className="badge-youtube inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-md"><YouTubeIcon className="w-3 h-3" />YouTube</span>;
-  return <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-[var(--gold-primary)]/10 text-[var(--gold-light)] border border-[var(--border-gold)]">{platform}</span>;
+  return <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-[var(--accent-leaf)]/10 text-[var(--viva-green-bright)] border border-[var(--border-accent)]">{platform}</span>;
 }
 
 /* ── Component ── */
@@ -153,7 +153,7 @@ export default function ScriptsPanel() {
         </div>
         <button
           onClick={() => { setShowGenerator(true); setActiveScript(null); setError(""); }}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[var(--gold-dark)] to-[var(--gold-primary)] text-[var(--bg-primary)] font-semibold text-sm hover:shadow-lg hover:shadow-[var(--gold-primary)]/20 transition-all active:scale-95"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[var(--viva-green)] to-[var(--accent-leaf)] text-[var(--bg-primary)] font-semibold text-sm hover:shadow-lg hover:shadow-[var(--accent-leaf)]/20 transition-all active:scale-95"
         >
           <SparklesIcon className="w-4 h-4" />
           <span className="hidden sm:inline">Nuevo Guion</span>
@@ -162,11 +162,11 @@ export default function ScriptsPanel() {
 
       {/* ── Generator Form ── */}
       {showGenerator && (
-        <div className="animate-fade-up rounded-2xl border border-[var(--border-gold)] bg-gradient-to-br from-[var(--gold-primary)]/5 to-[var(--bg-card)] p-5 md:p-6 space-y-4">
+        <div className="animate-fade-up rounded-2xl border border-[var(--border-accent)] bg-gradient-to-br from-[var(--accent-leaf)]/5 to-[var(--bg-card)] p-5 md:p-6 space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="p-2 rounded-xl bg-[var(--gold-primary)]/10">
-                <SparklesIcon className="w-5 h-5 text-[var(--gold-light)]" />
+              <div className="p-2 rounded-xl bg-[var(--accent-leaf)]/10">
+                <SparklesIcon className="w-5 h-5 text-[var(--viva-green-bright)]" />
               </div>
               <div>
                 <h3 className="text-sm font-bold text-[var(--text-primary)]">Generador de Guiones</h3>
@@ -186,7 +186,7 @@ export default function ScriptsPanel() {
               onChange={(e) => setTopic(e.target.value)}
               placeholder='Ej: "5 errores comunes al instalar turf sintetico" o "Before & after de un patio con pavers"'
               rows={2}
-              className="w-full px-4 py-3 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--gold-primary)] focus:ring-1 focus:ring-[var(--gold-primary)]/30 transition-all resize-none"
+              className="w-full px-4 py-3 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-leaf)] focus:ring-1 focus:ring-[var(--accent-leaf)]/30 transition-all resize-none"
             />
           </div>
 
@@ -206,7 +206,7 @@ export default function ScriptsPanel() {
                     onClick={() => setPlatform(p.key)}
                     className={`px-3 py-2 rounded-lg text-xs font-medium transition-all ${
                       platform === p.key
-                        ? "bg-[var(--gold-primary)]/15 text-[var(--gold-light)] border border-[var(--border-gold)]"
+                        ? "bg-[var(--accent-leaf)]/15 text-[var(--viva-green-bright)] border border-[var(--border-accent)]"
                         : "bg-[var(--bg-secondary)] text-[var(--text-muted)] border border-[var(--border-color)] hover:border-[var(--text-muted)]/30"
                     }`}
                   >
@@ -231,7 +231,7 @@ export default function ScriptsPanel() {
                     onClick={() => setDuration(d.key)}
                     className={`px-3 py-2 rounded-lg text-xs font-medium transition-all ${
                       duration === d.key
-                        ? "bg-[var(--gold-primary)]/15 text-[var(--gold-light)] border border-[var(--border-gold)]"
+                        ? "bg-[var(--accent-leaf)]/15 text-[var(--viva-green-bright)] border border-[var(--border-accent)]"
                         : "bg-[var(--bg-secondary)] text-[var(--text-muted)] border border-[var(--border-color)] hover:border-[var(--text-muted)]/30"
                     }`}
                   >
@@ -250,7 +250,7 @@ export default function ScriptsPanel() {
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Ej: enfocarse en el ahorro de agua, mencionar la oferta de primavera..."
-              className="w-full px-4 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--gold-primary)] focus:ring-1 focus:ring-[var(--gold-primary)]/30 transition-all"
+              className="w-full px-4 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-leaf)] focus:ring-1 focus:ring-[var(--accent-leaf)]/30 transition-all"
             />
           </div>
 
@@ -265,7 +265,7 @@ export default function ScriptsPanel() {
           <button
             onClick={generate}
             disabled={!topic.trim() || generating}
-            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-[var(--gold-dark)] to-[var(--gold-primary)] text-[var(--bg-primary)] font-bold text-sm disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-[var(--gold-primary)]/25 transition-all active:scale-[0.98]"
+            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-[var(--viva-green)] to-[var(--accent-leaf)] text-[var(--bg-primary)] font-bold text-sm disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-[var(--accent-leaf)]/25 transition-all active:scale-[0.98]"
           >
             {generating ? (
               <>
@@ -287,14 +287,14 @@ export default function ScriptsPanel() {
         <div className="animate-fade-up space-y-4">
           {/* Back + actions */}
           <div className="flex items-center justify-between">
-            <button onClick={() => setActiveScript(null)} className="text-xs text-[var(--text-muted)] hover:text-[var(--gold-light)] transition-all flex items-center gap-1">
+            <button onClick={() => setActiveScript(null)} className="text-xs text-[var(--text-muted)] hover:text-[var(--viva-green-bright)] transition-all flex items-center gap-1">
               <ChevronRightIcon className="w-3 h-3 rotate-180" />
               Volver a la biblioteca
             </button>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => copyToClipboard(activeScript)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--bg-secondary)] text-[var(--text-muted)] border border-[var(--border-color)] hover:border-[var(--border-gold)] hover:text-[var(--gold-light)] transition-all"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--bg-secondary)] text-[var(--text-muted)] border border-[var(--border-color)] hover:border-[var(--border-accent)] hover:text-[var(--viva-green-bright)] transition-all"
               >
                 <CopyIcon className="w-3.5 h-3.5" />
                 Copiar
@@ -309,7 +309,7 @@ export default function ScriptsPanel() {
           </div>
 
           {/* Title + Meta */}
-          <div className="rounded-2xl border border-[var(--border-gold)] bg-gradient-to-br from-[var(--gold-primary)]/5 to-[var(--bg-card)] p-5">
+          <div className="rounded-2xl border border-[var(--border-accent)] bg-gradient-to-br from-[var(--accent-leaf)]/5 to-[var(--bg-card)] p-5">
             <h3 className="text-lg font-bold text-gold-gradient mb-2">{activeScript.title}</h3>
             <div className="flex flex-wrap items-center gap-2 mb-1">
               <PlatformLabel platform={activeScript.platform} />
@@ -328,8 +328,8 @@ export default function ScriptsPanel() {
           {/* Hook */}
           <div className="rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)]/50 p-5">
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-7 h-7 rounded-lg bg-[var(--gold-primary)] flex items-center justify-center text-[11px] font-bold text-[var(--bg-primary)]">🎬</div>
-              <h4 className="text-sm font-bold text-[var(--gold-light)]">Gancho Inicial</h4>
+              <div className="w-7 h-7 rounded-lg bg-[var(--accent-leaf)] flex items-center justify-center text-[11px] font-bold text-[var(--bg-primary)]">🎬</div>
+              <h4 className="text-sm font-bold text-[var(--viva-green-bright)]">Gancho Inicial</h4>
             </div>
             <p className="text-sm text-[var(--text-primary)] leading-relaxed italic">&ldquo;{activeScript.hook}&rdquo;</p>
           </div>
@@ -342,7 +342,7 @@ export default function ScriptsPanel() {
             {activeScript.keyPoints.map((kp, i) => (
               <div key={i} className="animate-fade-up stagger rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)]/30 p-4" style={{ "--i": i } as React.CSSProperties}>
                 <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-lg bg-[var(--gold-primary)]/15 flex items-center justify-center text-[11px] font-bold text-[var(--gold-light)] flex-shrink-0 mt-0.5">
+                  <div className="w-6 h-6 rounded-lg bg-[var(--accent-leaf)]/15 flex items-center justify-center text-[11px] font-bold text-[var(--viva-green-bright)] flex-shrink-0 mt-0.5">
                     {i + 1}
                   </div>
                   <div>
@@ -357,8 +357,8 @@ export default function ScriptsPanel() {
           {/* CTA */}
           <div className="rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)]/50 p-5">
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-7 h-7 rounded-lg bg-[var(--gold-primary)] flex items-center justify-center text-[11px] font-bold text-[var(--bg-primary)]">📣</div>
-              <h4 className="text-sm font-bold text-[var(--gold-light)]">Cierre & CTA</h4>
+              <div className="w-7 h-7 rounded-lg bg-[var(--accent-leaf)] flex items-center justify-center text-[11px] font-bold text-[var(--bg-primary)]">📣</div>
+              <h4 className="text-sm font-bold text-[var(--viva-green-bright)]">Cierre & CTA</h4>
             </div>
             <p className="text-sm text-[var(--text-primary)] leading-relaxed">{activeScript.cta}</p>
           </div>
@@ -372,7 +372,7 @@ export default function ScriptsPanel() {
               <ul className="space-y-2">
                 {activeScript.tips.map((tip, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm text-[var(--text-secondary)]">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[var(--gold-primary)] mt-1.5 flex-shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-leaf)] mt-1.5 flex-shrink-0" />
                     {tip}
                   </li>
                 ))}
@@ -387,14 +387,14 @@ export default function ScriptsPanel() {
         <>
           {scripts.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-center animate-fade-up">
-              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[var(--gold-primary)]/10 to-[var(--bg-card)] border border-[var(--border-gold)] flex items-center justify-center mb-4">
-                <ScriptIcon className="w-8 h-8 text-[var(--gold-light)]" />
+              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[var(--accent-leaf)]/10 to-[var(--bg-card)] border border-[var(--border-accent)] flex items-center justify-center mb-4">
+                <ScriptIcon className="w-8 h-8 text-[var(--viva-green-bright)]" />
               </div>
               <p className="text-[var(--text-secondary)] font-semibold text-base">Tu biblioteca esta vacia</p>
               <p className="text-sm text-[var(--text-muted)] mt-1 max-w-sm">Genera tu primer guion con AI. Solo describe el tema del video y la inteligencia artificial hara el resto.</p>
               <button
                 onClick={() => setShowGenerator(true)}
-                className="mt-5 flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[var(--gold-dark)] to-[var(--gold-primary)] text-[var(--bg-primary)] font-semibold text-sm hover:shadow-lg hover:shadow-[var(--gold-primary)]/20 transition-all active:scale-95"
+                className="mt-5 flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[var(--viva-green)] to-[var(--accent-leaf)] text-[var(--bg-primary)] font-semibold text-sm hover:shadow-lg hover:shadow-[var(--accent-leaf)]/20 transition-all active:scale-95"
               >
                 <SparklesIcon className="w-4 h-4" />
                 Crear Primer Guion
@@ -407,12 +407,12 @@ export default function ScriptsPanel() {
                 <button
                   key={script.id}
                   onClick={() => setActiveScript(script)}
-                  className="animate-fade-up stagger w-full text-left rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)]/40 p-4 hover:border-[var(--border-gold)] hover:shadow-lg hover:shadow-[var(--gold-primary)]/5 transition-all group"
+                  className="animate-fade-up stagger w-full text-left rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)]/40 p-4 hover:border-[var(--border-accent)] hover:shadow-lg hover:shadow-[var(--accent-leaf)]/5 transition-all group"
                   style={{ "--i": idx } as React.CSSProperties}
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-semibold text-[var(--text-primary)] group-hover:text-[var(--gold-light)] transition-colors truncate">{script.title}</h4>
+                      <h4 className="text-sm font-semibold text-[var(--text-primary)] group-hover:text-[var(--viva-green-bright)] transition-colors truncate">{script.title}</h4>
                       <p className="text-xs text-[var(--text-muted)] mt-0.5 truncate">Tema: {script.topic}</p>
                       <div className="flex flex-wrap items-center gap-1.5 mt-2">
                         <PlatformLabel platform={script.platform} />
@@ -433,7 +433,7 @@ export default function ScriptsPanel() {
                       <span
                         role="button"
                         onClick={(e) => { e.stopPropagation(); copyToClipboard(script); }}
-                        className="p-1.5 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-[var(--gold-primary)]/10 text-[var(--text-muted)] hover:text-[var(--gold-light)] transition-all"
+                        className="p-1.5 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-[var(--accent-leaf)]/10 text-[var(--text-muted)] hover:text-[var(--viva-green-bright)] transition-all"
                       >
                         <CopyIcon className="w-3.5 h-3.5" />
                       </span>
@@ -444,7 +444,7 @@ export default function ScriptsPanel() {
                       >
                         <TrashIcon className="w-3.5 h-3.5" />
                       </span>
-                      <ChevronRightIcon className="w-4 h-4 text-[var(--text-muted)] group-hover:text-[var(--gold-light)] transition-colors" />
+                      <ChevronRightIcon className="w-4 h-4 text-[var(--text-muted)] group-hover:text-[var(--viva-green-bright)] transition-colors" />
                     </div>
                   </div>
                 </button>

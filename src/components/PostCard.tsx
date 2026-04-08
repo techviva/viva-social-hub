@@ -74,7 +74,7 @@ export function PostCardGrid({ post }: { post: Post }) {
           {post.description}
         </p>
         <div className="flex items-center gap-1.5 text-xs text-[var(--text-secondary)]">
-          <CalendarIcon className="w-3.5 h-3.5 text-[var(--gold-primary)]" />
+          <CalendarIcon className="w-3.5 h-3.5 text-[var(--accent-leaf)]" />
           <span>{formatDate(post.scheduledDate)}</span>
           <span className="text-[var(--text-muted)]">-</span>
           <span>{formatTime(post.scheduledDate)}</span>
@@ -118,7 +118,7 @@ export function PostCardList({ post }: { post: Post }) {
             {post.description}
           </p>
           <div className="flex items-center gap-1.5 text-xs text-[var(--text-secondary)] mt-1.5">
-            <CalendarIcon className="w-3 h-3 text-[var(--gold-primary)]" />
+            <CalendarIcon className="w-3 h-3 text-[var(--accent-leaf)]" />
             <span>{formatDate(post.scheduledDate)}</span>
             <span className="text-[var(--text-muted)]">-</span>
             <span>{formatTime(post.scheduledDate)}</span>

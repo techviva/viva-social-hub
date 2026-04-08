@@ -33,7 +33,7 @@ PHOTO EDITING (apply ALL):
 3. CLARITY: High clarity and sharpness — magazine-quality crisp
 4. LIGHT LEAK: Very subtle warm light leak from top-right corner (5% opacity)
 5. BOTTOM BAR: Add a solid white rectangle at the very bottom — full width, 18% of image height, with 90% opacity white fill
-6. ACCENT LINE: Thin horizontal gold line (#d4a843, 2px) at the top edge of the white rectangle
+6. ACCENT LINE: Thin horizontal gold line (#7ab82e, 2px) at the top edge of the white rectangle
 
 DO NOT add any text, words, letters, or watermarks.
 Only the photo edit + white bar + gold accent line. No text at all.
@@ -45,7 +45,7 @@ PHOTO EDITING (apply ALL):
 1. HIGH CONTRAST: Push contrast dramatically — deep true blacks, vivid saturated colors
 2. TEAL SHADOWS: Shift shadows toward dark blue-teal for cinematic depth
 3. DARK OVERLAY: Apply 35% opacity black overlay on entire image for moodiness
-4. CORNER ACCENTS: Add thin L-shaped bracket lines (2px, gold #d4a843) at top-left corner and bottom-right corner — each arm 80px long
+4. CORNER ACCENTS: Add thin L-shaped bracket lines (2px, gold #7ab82e) at top-left corner and bottom-right corner — each arm 80px long
 5. VIGNETTE: Strong vignette darkening corners by 40%
 6. SHARPNESS: Maximum clarity for dramatic impact
 
@@ -58,7 +58,7 @@ Output: 1080x1080 pixels, square.`,
 PHOTO EDITING (apply ALL):
 1. RIGHT HALF: Warm vibrant color grade — lush greens, golden warm light, saturated
 2. LEFT HALF: Cooler desaturated treatment — slightly washed out, less vibrant, lower contrast
-3. CENTER DIVIDER: Thin diagonal line (2px, gold #d4a843) from top-center to bottom-center
+3. CENTER DIVIDER: Thin diagonal line (2px, gold #7ab82e) from top-center to bottom-center
 4. DIAMOND ACCENT: Small gold diamond shape (12px) at the center intersection point
 5. BOTTOM BANNER: Dark semi-transparent strip (full width, 12% height, 70% black opacity) at the very bottom edge
 
@@ -72,7 +72,7 @@ PHOTO EDITING (apply ALL):
 1. EDITORIAL GRADE: Rich warm tones, lifted blacks (not pure black — more like #1a1a2e minimum)
 2. GOLDEN HOUR: Push overall warmth, add subtle amber to highlights
 3. FILM GRAIN: Very subtle fine grain texture for analog premium feel
-4. INSET BORDER: Thin elegant border (2px, gold #d4a843 at 35% opacity), inset 50px from each edge
+4. INSET BORDER: Thin elegant border (2px, gold #7ab82e at 35% opacity), inset 50px from each edge
 5. CORNER CARD: Small semi-transparent dark rectangle (140x80px, rgba(0,0,0,0.55), rounded corners) positioned at bottom-left, inside the inset border
 6. LENS FLARE: Very subtle warm lens flare or light streak from top-right (barely visible)
 

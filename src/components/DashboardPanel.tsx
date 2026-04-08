@@ -46,7 +46,7 @@ export default function DashboardPanel() {
       {/* Week Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {[
-          { label: "Posts esta semana", value: weekPosts.length, color: "var(--gold-primary)", icon: <CalendarIcon className="w-4 h-4" /> },
+          { label: "Posts esta semana", value: weekPosts.length, color: "var(--accent-leaf)", icon: <CalendarIcon className="w-4 h-4" /> },
           { label: "Borradores", value: weekDrafts, color: "var(--status-draft)", icon: <span className="w-4 h-4 flex items-center justify-center text-xs">~</span> },
           { label: "Listos", value: weekReady, color: "var(--status-ready)", icon: <TrendUpIcon className="w-4 h-4" /> },
           { label: "Publicados", value: weekPublished, color: "var(--status-published)", icon: <FireIcon className="w-4 h-4" /> },
@@ -140,7 +140,7 @@ export default function DashboardPanel() {
         {/* Top Posts */}
         <div className="card-glass rounded-2xl p-5">
           <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4 flex items-center gap-2">
-            <FireIcon className="w-4 h-4 text-[var(--gold-primary)]" />
+            <FireIcon className="w-4 h-4 text-[var(--accent-leaf)]" />
             Mejores Posts
           </h3>
           <div className="space-y-3">
@@ -148,7 +148,7 @@ export default function DashboardPanel() {
               <div key={post.id} className="flex items-center gap-3 p-2 rounded-xl hover:bg-[var(--bg-card)]/50 transition-all">
                 <div className="relative flex-shrink-0">
                   <img src={post.image} alt={post.title} className="w-12 h-12 rounded-lg object-cover" />
-                  <div className="absolute -top-1 -left-1 w-5 h-5 rounded-full bg-[var(--gold-primary)] flex items-center justify-center text-[10px] font-bold text-[var(--bg-primary)]">
+                  <div className="absolute -top-1 -left-1 w-5 h-5 rounded-full bg-[var(--accent-leaf)] flex items-center justify-center text-[10px] font-bold text-[var(--bg-primary)]">
                     {idx + 1}
                   </div>
                 </div>

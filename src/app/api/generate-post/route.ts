@@ -39,7 +39,7 @@ REGLAS DE COPY:
 REGLAS DE DIRECCION ARTISTICA:
 - Elige un template Y genera variaciones visuales UNICAS para este post
 - Los numeros de filtro deben variar cada vez — NUNCA uses los mismos valores
-- El accentColor debe complementar el tema (dorado para premium, verde para turf/naturaleza, azul para agua/piscinas, rojo para urgencia/promos, purpura para luxury)
+- PALETA VIVA: el accentColor principal es #7ab82e (verde lima Viva). Alternativas: #3c4a30 (verde oscuro), #795220 (tierra), #e3e3d2 (crema), #4d6340 (verde medio). Para promos urgentes puedes usar #e11d48. Para agua/piscinas #0ea5e9. SIEMPRE prioriza los verdes Viva.
 - Varia los angulos de gradiente, la intensidad del contraste, la saturacion
 - Cada post debe sentirse diferente visualmente
 

@@ -209,12 +209,12 @@ export default function AIPostCreator({ open, onClose, onSaveDraft, onSchedule }
         </div>
       )}
 
-      <div className="relative z-10 w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl border border-[var(--border-gold)] bg-[var(--bg-secondary)] shadow-2xl animate-fade-up">
+      <div className="relative z-10 w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl border border-[var(--border-accent)] bg-[var(--bg-secondary)] shadow-2xl animate-fade-up">
 
         {/* Header */}
         <div className="sticky top-0 z-10 flex items-center justify-between px-5 py-4 border-b border-[var(--border-color)] bg-[var(--bg-secondary)]">
           <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-lg bg-[var(--gold-primary)]/10"><SparklesIcon className="w-5 h-5 text-[var(--gold-light)]" /></div>
+            <div className="p-1.5 rounded-lg bg-[var(--accent-leaf)]/10"><SparklesIcon className="w-5 h-5 text-[var(--viva-green-bright)]" /></div>
             <h3 className="text-sm font-bold text-[var(--text-primary)]">Crear con AI</h3>
           </div>
           <button onClick={onClose} className="p-2 rounded-lg hover:bg-[var(--bg-card)] text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-all"><XIcon className="w-5 h-5" /></button>
@@ -229,7 +229,7 @@ export default function AIPostCreator({ open, onClose, onSaveDraft, onSchedule }
               <div>
                 <label className="text-[11px] uppercase tracking-wider text-[var(--text-muted)] mb-1.5 block font-semibold">Describe tu post</label>
                 <textarea value={prompt} onChange={(e) => setPrompt(e.target.value)} placeholder='Ej: "Before & after de pavers travertino" o "Promo spring 15% off turf"' rows={3}
-                  className="w-full px-4 py-3 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--gold-primary)] focus:ring-1 focus:ring-[var(--gold-primary)]/30 transition-all resize-none" />
+                  className="w-full px-4 py-3 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-leaf)] focus:ring-1 focus:ring-[var(--accent-leaf)]/30 transition-all resize-none" />
               </div>
               <div>
                 <label className="text-[11px] uppercase tracking-wider text-[var(--text-muted)] mb-1.5 block font-semibold">Plataforma</label>
@@ -243,7 +243,7 @@ export default function AIPostCreator({ open, onClose, onSaveDraft, onSchedule }
                 </div>
               </div>
               <button onClick={generate} disabled={!prompt.trim()}
-                className="w-full py-3 rounded-xl bg-gradient-to-r from-[var(--gold-dark)] to-[var(--gold-primary)] text-[var(--bg-primary)] font-bold text-sm disabled:opacity-40 hover:shadow-lg hover:shadow-[var(--gold-primary)]/25 transition-all active:scale-[0.98]">
+                className="w-full py-3 rounded-xl bg-gradient-to-r from-[var(--viva-green)] to-[var(--accent-leaf)] text-[var(--bg-primary)] font-bold text-sm disabled:opacity-40 hover:shadow-lg hover:shadow-[var(--accent-leaf)]/25 transition-all active:scale-[0.98]">
                 <SparklesIcon className="w-4 h-4 inline mr-2" />Generar Post
               </button>
             </>
@@ -252,7 +252,7 @@ export default function AIPostCreator({ open, onClose, onSaveDraft, onSchedule }
           {/* ═══ WORKING ═══ */}
           {step === "working" && (
             <div className="flex flex-col items-center py-16 gap-4">
-              <div className="relative"><div className="w-16 h-16 border-4 border-[var(--gold-primary)]/20 border-t-[var(--gold-primary)] rounded-full animate-spin" /><SparklesIcon className="w-6 h-6 text-[var(--gold-light)] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" /></div>
+              <div className="relative"><div className="w-16 h-16 border-4 border-[var(--accent-leaf)]/20 border-t-[var(--accent-leaf)] rounded-full animate-spin" /><SparklesIcon className="w-6 h-6 text-[var(--viva-green-bright)] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" /></div>
               <p className="text-sm text-[var(--text-primary)] font-semibold">{statusMsg}{dots}</p>
             </div>
           )}
@@ -261,7 +261,7 @@ export default function AIPostCreator({ open, onClose, onSaveDraft, onSchedule }
           {step === "result" && (
             <>
               {/* Rendered post preview */}
-              <div ref={renderRef} className="rounded-2xl overflow-hidden border border-[var(--border-gold)] shadow-lg shadow-[var(--gold-primary)]/10 cursor-pointer" onClick={() => setShowFullscreen(true)}>
+              <div ref={renderRef} className="rounded-2xl overflow-hidden border border-[var(--border-accent)] shadow-lg shadow-[var(--accent-leaf)]/10 cursor-pointer" onClick={() => setShowFullscreen(true)}>
                 <PostRenderer template={activeTemplate} variation={activeVariation} imageUrl={photoUrl} headline={editHeadline} subline={editSubline} cta={editCta} />
                 <div className="absolute top-2 right-2 px-2 py-1 bg-black/50 rounded-md text-[9px] text-white/70 pointer-events-none z-20">Toca para ampliar</div>
               </div>
@@ -272,7 +272,7 @@ export default function AIPostCreator({ open, onClose, onSaveDraft, onSchedule }
                 <div className="flex gap-1.5 overflow-x-auto pb-1">
                   {POST_TEMPLATES.map((tpl) => (
                     <button key={tpl.id} onClick={() => { setActiveTemplate(tpl); setActiveVariation(getRandomVariation(activeVariation.accentColor)); }}
-                      className={`flex-shrink-0 w-12 rounded-lg overflow-hidden border-2 transition-all ${activeTemplate.id === tpl.id ? "border-[var(--gold-primary)] scale-110" : "border-transparent opacity-50 hover:opacity-80"}`}>
+                      className={`flex-shrink-0 w-12 rounded-lg overflow-hidden border-2 transition-all ${activeTemplate.id === tpl.id ? "border-[var(--accent-leaf)] scale-110" : "border-transparent opacity-50 hover:opacity-80"}`}>
                       <div className="h-6" style={{ background: tpl.preview }} />
                       <p className="text-[6px] text-center py-0.5 bg-[var(--bg-primary)] text-[var(--text-muted)] truncate px-0.5">{tpl.name}</p>
                     </button>
@@ -282,24 +282,24 @@ export default function AIPostCreator({ open, onClose, onSaveDraft, onSchedule }
 
               {/* Edit text */}
               <div>
-                <button onClick={() => setShowTextEdit(!showTextEdit)} className="text-[10px] text-[var(--gold-light)] hover:underline mb-2">
+                <button onClick={() => setShowTextEdit(!showTextEdit)} className="text-[10px] text-[var(--viva-green-bright)] hover:underline mb-2">
                   {showTextEdit ? "Ocultar editor de texto" : "Editar textos"}
                 </button>
                 {showTextEdit && (
                   <div className="space-y-2 animate-fade-up">
                     <input type="text" value={editHeadline} onChange={(e) => setEditHeadline(e.target.value)} placeholder="Headline"
-                      className="w-full px-3 py-2 rounded-lg bg-[var(--bg-primary)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--gold-primary)]" />
+                      className="w-full px-3 py-2 rounded-lg bg-[var(--bg-primary)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-leaf)]" />
                     <input type="text" value={editSubline} onChange={(e) => setEditSubline(e.target.value)} placeholder="Subline"
-                      className="w-full px-3 py-2 rounded-lg bg-[var(--bg-primary)] border border-[var(--border-color)] text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--gold-primary)]" />
+                      className="w-full px-3 py-2 rounded-lg bg-[var(--bg-primary)] border border-[var(--border-color)] text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-leaf)]" />
                     <input type="text" value={editCta} onChange={(e) => setEditCta(e.target.value)} placeholder="CTA"
-                      className="w-full px-3 py-2 rounded-lg bg-[var(--bg-primary)] border border-[var(--border-color)] text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--gold-primary)]" />
+                      className="w-full px-3 py-2 rounded-lg bg-[var(--bg-primary)] border border-[var(--border-color)] text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-leaf)]" />
                   </div>
                 )}
               </div>
 
               {/* Caption */}
               <div className="rounded-xl border border-[var(--border-color)] bg-[var(--bg-primary)]/50 p-3 space-y-1.5">
-                <p className="text-[10px] uppercase tracking-wider text-[var(--gold-light)] font-semibold">Caption</p>
+                <p className="text-[10px] uppercase tracking-wider text-[var(--viva-green-bright)] font-semibold">Caption</p>
                 <p className="text-xs text-[var(--text-primary)] whitespace-pre-line leading-relaxed max-h-24 overflow-y-auto">{postData.caption}</p>
                 <p className="text-[10px] text-[var(--text-muted)]">{postData.hashtags}</p>
               </div>
@@ -307,11 +307,11 @@ export default function AIPostCreator({ open, onClose, onSaveDraft, onSchedule }
               {/* Actions */}
               <div className="flex gap-2">
                 <button onClick={handleSaveDraft}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-[var(--border-color)] text-sm text-[var(--text-muted)] hover:text-[var(--gold-light)] hover:border-[var(--border-gold)] transition-all">
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-[var(--border-color)] text-sm text-[var(--text-muted)] hover:text-[var(--viva-green-bright)] hover:border-[var(--border-accent)] transition-all">
                   <ScriptIcon className="w-4 h-4" />Borrador
                 </button>
                 <button onClick={() => setStep("schedule")}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-gradient-to-r from-[var(--gold-dark)] to-[var(--gold-primary)] text-[var(--bg-primary)] font-semibold text-sm transition-all active:scale-[0.98]">
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-gradient-to-r from-[var(--viva-green)] to-[var(--accent-leaf)] text-[var(--bg-primary)] font-semibold text-sm transition-all active:scale-[0.98]">
                   <CalendarIcon className="w-4 h-4" />Programar
                 </button>
               </div>
@@ -323,7 +323,7 @@ export default function AIPostCreator({ open, onClose, onSaveDraft, onSchedule }
           {step === "schedule" && (
             <div className="space-y-4 animate-fade-up">
               <div className="flex items-center gap-3">
-                <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 border border-[var(--border-gold)]">
+                <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 border border-[var(--border-accent)]">
                   <PostRenderer template={activeTemplate} variation={activeVariation} imageUrl={photoUrl} headline={editHeadline} subline={editSubline} cta={editCta} />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -332,12 +332,12 @@ export default function AIPostCreator({ open, onClose, onSaveDraft, onSchedule }
                 </div>
               </div>
               <div><label className="text-[11px] uppercase tracking-wider text-[var(--text-muted)] mb-1.5 block font-semibold">Fecha</label>
-                <input type="date" value={scheduleDate} onChange={(e) => setScheduleDate(e.target.value)} className="w-full px-4 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--gold-primary)] [color-scheme:dark]" /></div>
+                <input type="date" value={scheduleDate} onChange={(e) => setScheduleDate(e.target.value)} className="w-full px-4 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-leaf)] [color-scheme:dark]" /></div>
               <div><label className="text-[11px] uppercase tracking-wider text-[var(--text-muted)] mb-1.5 block font-semibold">Hora</label>
-                <input type="time" value={scheduleTime} onChange={(e) => setScheduleTime(e.target.value)} className="w-full px-4 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--gold-primary)] [color-scheme:dark]" /></div>
+                <input type="time" value={scheduleTime} onChange={(e) => setScheduleTime(e.target.value)} className="w-full px-4 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-leaf)] [color-scheme:dark]" /></div>
               <div className="flex gap-2">
                 <button onClick={() => setStep("result")} className="flex-1 py-2.5 rounded-xl border border-[var(--border-color)] text-sm text-[var(--text-muted)] transition-all">Atras</button>
-                <button onClick={handleSchedule} disabled={!scheduleDate} className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-[var(--gold-dark)] to-[var(--gold-primary)] text-[var(--bg-primary)] font-semibold text-sm disabled:opacity-40 transition-all active:scale-[0.98]">
+                <button onClick={handleSchedule} disabled={!scheduleDate} className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-[var(--viva-green)] to-[var(--accent-leaf)] text-[var(--bg-primary)] font-semibold text-sm disabled:opacity-40 transition-all active:scale-[0.98]">
                   <CalendarIcon className="w-4 h-4 inline mr-1.5" />Programar
                 </button>
               </div>

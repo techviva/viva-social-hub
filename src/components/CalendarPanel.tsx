@@ -275,7 +275,7 @@ export default function CalendarPanel() {
           <div className="hidden md:flex items-center gap-3 mr-3 text-[11px]">
             <span className="text-[var(--text-muted)]">{allPosts.filter(p => { const d = new Date(p.scheduledDate); return d.getMonth() === month && d.getFullYear() === year; }).length} posts</span>
           </div>
-          <button onClick={goToday} className="px-3 py-1.5 text-xs font-medium rounded-lg border border-[var(--border-gold)] text-[var(--gold-light)] hover:bg-[var(--gold-primary)]/10 transition-all">
+          <button onClick={goToday} className="px-3 py-1.5 text-xs font-medium rounded-lg border border-[var(--border-accent)] text-[var(--viva-green-bright)] hover:bg-[var(--accent-leaf)]/10 transition-all">
             Hoy
           </button>
         </div>
@@ -317,8 +317,8 @@ export default function CalendarPanel() {
                 border-b border-[var(--border-color)]
                 ${!isLastCol ? "border-r border-[var(--border-color)]" : ""}
                 ${empty ? "bg-[var(--bg-primary)]/50" : "bg-[var(--bg-secondary)]/20"}
-                ${complete ? "shadow-[inset_0_-3px_0_var(--gold-primary)]" : ""}
-                ${isSelected ? "bg-[var(--gold-primary)]/10 ring-2 ring-inset ring-[var(--gold-primary)]/40" : "hover:bg-[var(--bg-card)]/30"}
+                ${complete ? "shadow-[inset_0_-3px_0_var(--accent-leaf)]" : ""}
+                ${isSelected ? "bg-[var(--accent-leaf)]/10 ring-2 ring-inset ring-[var(--accent-leaf)]/40" : "hover:bg-[var(--bg-card)]/30"}
               `}
             >
               {/* Day number row */}
@@ -326,8 +326,8 @@ export default function CalendarPanel() {
                 <span className={`
                   text-xs font-semibold inline-flex items-center justify-center leading-none
                   ${todayFlag
-                    ? "w-7 h-7 rounded-full bg-[var(--gold-primary)] text-[var(--bg-primary)] animate-today-pulse"
-                    : isSelected ? "text-[var(--gold-light)]"
+                    ? "w-7 h-7 rounded-full bg-[var(--accent-leaf)] text-[var(--bg-primary)] animate-today-pulse"
+                    : isSelected ? "text-[var(--viva-green-bright)]"
                     : empty ? "text-[var(--text-muted)]/40"
                     : "text-[var(--text-secondary)]"
                   }
@@ -335,7 +335,7 @@ export default function CalendarPanel() {
                   {day}
                 </span>
                 {dayPosts.length > 0 && (
-                  <span className="text-[10px] font-medium rounded-full w-5 h-5 flex items-center justify-center" style={{ background: "var(--gold-primary)", color: "var(--bg-primary)", opacity: 0.8 }}>
+                  <span className="text-[10px] font-medium rounded-full w-5 h-5 flex items-center justify-center" style={{ background: "var(--accent-leaf)", color: "var(--bg-primary)", opacity: 0.8 }}>
                     {dayPosts.length}
                   </span>
                 )}
@@ -364,7 +364,7 @@ export default function CalendarPanel() {
                 ))}
               </div>
 
-              {complete && <div className="absolute top-0 right-0 w-0 h-0 border-t-[14px] border-t-[var(--gold-primary)] border-l-[14px] border-l-transparent" />}
+              {complete && <div className="absolute top-0 right-0 w-0 h-0 border-t-[14px] border-t-[var(--accent-leaf)] border-l-[14px] border-l-transparent" />}
             </button>
           );
         })}
@@ -402,12 +402,12 @@ export default function CalendarPanel() {
               {showAI && (
                 <div className="space-y-3 animate-fade-up">
                   <div className="flex items-center gap-2 mb-1">
-                    <div className="p-1.5 rounded-lg bg-[var(--gold-primary)]/10"><SparklesIcon className="w-4 h-4 text-[var(--gold-light)]" /></div>
+                    <div className="p-1.5 rounded-lg bg-[var(--accent-leaf)]/10"><SparklesIcon className="w-4 h-4 text-[var(--viva-green-bright)]" /></div>
                     <h4 className="text-sm font-bold text-gold-gradient">Generar con AI</h4>
                   </div>
 
                   <textarea value={aiPrompt} onChange={(e) => setAiPrompt(e.target.value)} placeholder='Ej: "Post de before & after de instalacion de pavers" o "Promo de primavera para turf"' rows={2}
-                    className="w-full px-3 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--gold-primary)] focus:ring-1 focus:ring-[var(--gold-primary)]/30 transition-all resize-none" />
+                    className="w-full px-3 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-leaf)] focus:ring-1 focus:ring-[var(--accent-leaf)]/30 transition-all resize-none" />
 
                   <div className="flex gap-1.5">
                     {(["instagram", "tiktok", "youtube"] as const).map((p) => (
@@ -419,7 +419,7 @@ export default function CalendarPanel() {
                   </div>
 
                   <select value={aiCategory} onChange={(e) => setAiCategory(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--gold-primary)] [color-scheme:dark]">
+                    className="w-full px-3 py-2 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-leaf)] [color-scheme:dark]">
                     <option value="">Categoria de foto (opcional)</option>
                     <option value="pavers">Pavers</option>
                     <option value="turf">Turf</option>
@@ -433,7 +433,7 @@ export default function CalendarPanel() {
 
                   <div className="flex gap-2">
                     <button onClick={generateWithAI} disabled={!aiPrompt.trim() || generating}
-                      className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-[var(--gold-dark)] to-[var(--gold-primary)] text-[var(--bg-primary)] font-semibold text-sm disabled:opacity-40 transition-all active:scale-[0.98]">
+                      className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-[var(--viva-green)] to-[var(--accent-leaf)] text-[var(--bg-primary)] font-semibold text-sm disabled:opacity-40 transition-all active:scale-[0.98]">
                       {generating ? <><span className="w-3.5 h-3.5 border-2 border-[var(--bg-primary)]/30 border-t-[var(--bg-primary)] rounded-full animate-spin" />Generando{dots}</> : <><SparklesIcon className="w-4 h-4" />Generar</>}
                     </button>
                     <button onClick={() => setShowAI(false)} className="px-4 py-2.5 rounded-xl border border-[var(--border-color)] text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-all">Cancelar</button>
@@ -447,10 +447,10 @@ export default function CalendarPanel() {
                   <h4 className="text-sm font-semibold text-gold-gradient">{editingPost ? "Editar Publicacion" : "Nueva Publicacion"}</h4>
 
                   <input type="text" value={formTitle} onChange={(e) => setFormTitle(e.target.value)} placeholder="Titulo del post"
-                    className="w-full px-3 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--gold-primary)] transition-all" />
+                    className="w-full px-3 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-leaf)] transition-all" />
 
                   <textarea value={formDesc} onChange={(e) => setFormDesc(e.target.value)} placeholder="Caption / descripcion..." rows={4}
-                    className="w-full px-3 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--gold-primary)] transition-all resize-none" />
+                    className="w-full px-3 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-leaf)] transition-all resize-none" />
 
                   {/* Photo section */}
                   <div>
@@ -468,7 +468,7 @@ export default function CalendarPanel() {
                               <input type="text" value={geminiPrompt} onChange={(e) => setGeminiPrompt(e.target.value)} placeholder="Instruccion para Gemini: ej. add warm cinematic color grade..."
                                 className="flex-1 px-2.5 py-1.5 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-color)] text-[11px] text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none" />
                               <button onClick={editWithGemini} disabled={!geminiPrompt.trim() || editingImage}
-                                className="px-3 py-1.5 rounded-lg bg-[var(--gold-primary)] text-[var(--bg-primary)] text-[11px] font-semibold disabled:opacity-40 transition-all flex items-center gap-1">
+                                className="px-3 py-1.5 rounded-lg bg-[var(--accent-leaf)] text-[var(--bg-primary)] text-[11px] font-semibold disabled:opacity-40 transition-all flex items-center gap-1">
                                 {editingImage ? <><span className="w-3 h-3 border-2 border-[var(--bg-primary)]/30 border-t-[var(--bg-primary)] rounded-full animate-spin" />{dots}</> : "Editar"}
                               </button>
                             </div>
@@ -477,7 +477,7 @@ export default function CalendarPanel() {
                       </div>
                     ) : (
                       <button onClick={openPhotoPicker}
-                        className="w-full py-6 rounded-xl border-2 border-dashed border-[var(--border-color)] hover:border-[var(--border-gold)] text-[var(--text-muted)] hover:text-[var(--gold-light)] transition-all flex flex-col items-center gap-1">
+                        className="w-full py-6 rounded-xl border-2 border-dashed border-[var(--border-color)] hover:border-[var(--border-accent)] text-[var(--text-muted)] hover:text-[var(--viva-green-bright)] transition-all flex flex-col items-center gap-1">
                         <span className="text-lg">📷</span>
                         <span className="text-xs font-medium">Elegir foto de Drive</span>
                         <span className="text-[10px]">Viva Media Library</span>
@@ -494,21 +494,21 @@ export default function CalendarPanel() {
                       </div>
                       {driveCategories.length > 0 && (
                         <div className="flex gap-1 flex-wrap">
-                          <button onClick={() => loadDrivePhotos()} className="px-2 py-1 rounded-md text-[10px] font-medium bg-[var(--gold-primary)]/10 text-[var(--gold-light)] border border-[var(--border-gold)]">Todas</button>
+                          <button onClick={() => loadDrivePhotos()} className="px-2 py-1 rounded-md text-[10px] font-medium bg-[var(--accent-leaf)]/10 text-[var(--viva-green-bright)] border border-[var(--border-accent)]">Todas</button>
                           {driveCategories.slice(0, 8).map((cat) => (
-                            <button key={cat.id} onClick={() => loadDrivePhotos(cat.id, true)} className="px-2 py-1 rounded-md text-[10px] text-[var(--text-muted)] hover:text-[var(--text-secondary)] border border-[var(--border-color)] hover:border-[var(--border-gold)] transition-all">{cat.name}</button>
+                            <button key={cat.id} onClick={() => loadDrivePhotos(cat.id, true)} className="px-2 py-1 rounded-md text-[10px] text-[var(--text-muted)] hover:text-[var(--text-secondary)] border border-[var(--border-color)] hover:border-[var(--border-accent)] transition-all">{cat.name}</button>
                           ))}
                         </div>
                       )}
                       {loadingPhotos ? (
-                        <div className="flex items-center justify-center py-8"><span className="w-5 h-5 border-2 border-[var(--gold-primary)]/30 border-t-[var(--gold-primary)] rounded-full animate-spin" /></div>
+                        <div className="flex items-center justify-center py-8"><span className="w-5 h-5 border-2 border-[var(--accent-leaf)]/30 border-t-[var(--accent-leaf)] rounded-full animate-spin" /></div>
                       ) : drivePhotos.length === 0 ? (
                         <p className="text-xs text-[var(--text-muted)] text-center py-4">No se encontraron fotos</p>
                       ) : (
                         <div className="grid grid-cols-4 gap-1.5 max-h-48 overflow-y-auto">
                           {drivePhotos.map((photo) => (
                             <button key={photo.id} onClick={() => { setSelectedPhoto(photo); setFormImage(photo.previewUrl); setShowPhotoPicker(false); }}
-                              className="aspect-square rounded-lg overflow-hidden border border-[var(--border-color)] hover:border-[var(--gold-primary)] transition-all hover:scale-105">
+                              className="aspect-square rounded-lg overflow-hidden border border-[var(--border-color)] hover:border-[var(--accent-leaf)] transition-all hover:scale-105">
                               <img src={photo.thumbnail} alt={photo.name} className="w-full h-full object-cover" />
                             </button>
                           ))}
@@ -539,13 +539,13 @@ export default function CalendarPanel() {
                     <div className="relative">
                       <ClockIcon className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[var(--text-muted)]" />
                       <input type="time" value={formTime} onChange={(e) => setFormTime(e.target.value)}
-                        className="w-full pl-8 pr-2 py-1.5 rounded-lg bg-[var(--bg-primary)] border border-[var(--border-color)] text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--gold-primary)] [color-scheme:dark]" />
+                        className="w-full pl-8 pr-2 py-1.5 rounded-lg bg-[var(--bg-primary)] border border-[var(--border-color)] text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-leaf)] [color-scheme:dark]" />
                     </div>
                   </div>
 
                   <div className="flex gap-2 pt-1">
                     <button onClick={savePost} disabled={!formTitle.trim()}
-                      className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-[var(--gold-dark)] to-[var(--gold-primary)] text-[var(--bg-primary)] font-semibold text-sm disabled:opacity-40 transition-all active:scale-[0.98]">
+                      className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-[var(--viva-green)] to-[var(--accent-leaf)] text-[var(--bg-primary)] font-semibold text-sm disabled:opacity-40 transition-all active:scale-[0.98]">
                       {editingPost ? "Guardar" : "Crear Publicacion"}
                     </button>
                     <button onClick={() => { setShowForm(false); setEditingPost(null); setShowPhotoPicker(false); }}
@@ -572,7 +572,7 @@ export default function CalendarPanel() {
                   ) : (
                     <div className="space-y-2">
                       {selectedPosts.map((post, idx) => (
-                        <div key={post.id} className="animate-fade-up stagger flex items-start gap-3 p-3 rounded-xl bg-[var(--bg-card)]/50 border border-[var(--border-color)] hover:border-[var(--border-gold)] transition-all group/card" style={{ "--i": idx } as React.CSSProperties}>
+                        <div key={post.id} className="animate-fade-up stagger flex items-start gap-3 p-3 rounded-xl bg-[var(--bg-card)]/50 border border-[var(--border-color)] hover:border-[var(--border-accent)] transition-all group/card" style={{ "--i": idx } as React.CSSProperties}>
                           <div className="relative flex-shrink-0">
                             <img src={post.image} alt={post.title} className="w-14 h-14 rounded-lg object-cover" />
                             <div className="absolute -bottom-1 -right-1 p-0.5 rounded-md" style={{ background: platformColors[post.platform] }}>
@@ -587,7 +587,7 @@ export default function CalendarPanel() {
                               <span className="text-[10px] text-[var(--text-muted)] flex items-center gap-1"><ClockIcon className="w-3 h-3" />{new Date(post.scheduledDate).toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" })}</span>
                             </div>
                           </div>
-                          <button onClick={(e) => { e.stopPropagation(); startEdit(post); }} className="p-1.5 rounded-lg opacity-0 group-hover/card:opacity-100 hover:bg-[var(--gold-primary)]/10 text-[var(--text-muted)] hover:text-[var(--gold-light)] transition-all flex-shrink-0">
+                          <button onClick={(e) => { e.stopPropagation(); startEdit(post); }} className="p-1.5 rounded-lg opacity-0 group-hover/card:opacity-100 hover:bg-[var(--accent-leaf)]/10 text-[var(--text-muted)] hover:text-[var(--viva-green-bright)] transition-all flex-shrink-0">
                             <EditIcon className="w-4 h-4" />
                           </button>
                         </div>
@@ -602,11 +602,11 @@ export default function CalendarPanel() {
             {!showForm && !showAI && (
               <div className="border-t border-[var(--border-color)] p-4 flex-shrink-0 space-y-2">
                 <button onClick={() => { setShowAI(true); setAiPrompt(""); setAiError(""); }}
-                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-[var(--gold-dark)] to-[var(--gold-primary)] text-[var(--bg-primary)] font-semibold text-sm hover:shadow-lg hover:shadow-[var(--gold-primary)]/20 transition-all active:scale-[0.98]">
+                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-[var(--viva-green)] to-[var(--accent-leaf)] text-[var(--bg-primary)] font-semibold text-sm hover:shadow-lg hover:shadow-[var(--accent-leaf)]/20 transition-all active:scale-[0.98]">
                   <SparklesIcon className="w-4 h-4" />Generar con AI
                 </button>
                 <button onClick={startNewPost}
-                  className="w-full flex items-center justify-center gap-2 py-2 rounded-xl border border-[var(--border-color)] text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:border-[var(--border-gold)] text-sm transition-all">
+                  className="w-full flex items-center justify-center gap-2 py-2 rounded-xl border border-[var(--border-color)] text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:border-[var(--border-accent)] text-sm transition-all">
                   <PlusIcon className="w-4 h-4" />Manual
                 </button>
               </div>
