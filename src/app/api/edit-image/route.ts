@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
   if (!prompt?.trim()) return NextResponse.json({ error: "Se necesita un prompt" }, { status: 400 });
 
   const fullPrompt = prompt + NO_TEXT_RULE;
-  const models = ["gemini-2.5-flash-image", "gemini-3-pro-image-preview"];
+  const models = ["nano-banana-pro-preview", "gemini-2.5-flash-image", "gemini-3-pro-image-preview"];
 
   try {
     const parts: Record<string, unknown>[] = [];
