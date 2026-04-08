@@ -164,21 +164,50 @@ export default function AIPostCreator({ open, onClose, onSaveDraft, onSchedule }
         const postJson = await postRes.json();
         if (!postRes.ok) { setError(postJson.error || `Error on creative ${i + 1}`); continue; }
 
+        // 2. MUST get a real Drive photo — no fallbacks to stock
         setStatusMsg(`Finding photo ${i + 1} of ${total}...`);
         const category = postJson.post.driveCategory || "best-of-viva";
-        const driveRes = await fetch(`/api/drive-photos?limit=8&category=${category}`);
-        const driveJson = await driveRes.json();
-        let photoUrl = "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=800&fit=crop";
-        if (driveJson.photos?.length) { photoUrl = driveJson.photos[i % driveJson.photos.length].previewUrl; }
+        let photoUrl = "";
 
-        let editedPhotoUrl = photoUrl;
+        // Try requested category first, then fallback to best-of-viva
+        for (const cat of [category, "best-of-viva", "turf", "pavers"]) {
+          if (photoUrl) break;
+          try {
+            const driveRes = await fetch(`/api/drive-photos?limit=8&category=${cat}`);
+            const driveJson = await driveRes.json();
+            if (driveJson.photos?.length) {
+              photoUrl = driveJson.photos[i % driveJson.photos.length].previewUrl;
+            }
+          } catch { /* try next category */ }
+        }
+
+        if (!photoUrl) {
+          setError(`No Drive photos found for creative ${i + 1} — skipping`);
+          continue; // SKIP this post entirely — no stock images allowed
+        }
+
+        // 3. MUST edit with Gemini — retry up to 2 times
+        let editedPhotoUrl = "";
         if (postJson.post.geminiPrompt) {
           setStatusMsg(`Editing photo ${i + 1} with AI...`);
-          try {
-            const editRes = await fetch("/api/edit-image", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ imageUrl: photoUrl, prompt: postJson.post.geminiPrompt }) });
-            const editJson = await editRes.json();
-            if (editJson.image) editedPhotoUrl = editJson.image;
-          } catch { /* fallback to original */ }
+          for (let attempt = 0; attempt < 2; attempt++) {
+            try {
+              const editRes = await fetch("/api/edit-image", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ imageUrl: photoUrl, prompt: postJson.post.geminiPrompt }),
+              });
+              const editJson = await editRes.json();
+              if (editJson.image) { editedPhotoUrl = editJson.image; break; }
+            } catch { /* retry */ }
+            if (attempt === 0) setStatusMsg(`Retrying edit ${i + 1}...`);
+          }
+        }
+
+        // If Gemini failed both attempts, skip this post
+        if (!editedPhotoUrl) {
+          setError(`AI edit failed for creative ${i + 1} — skipping`);
+          continue;
         }
 
         const tpl = getTemplateById(postJson.post.templateId) || POST_TEMPLATES[i % POST_TEMPLATES.length];

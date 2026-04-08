@@ -51,6 +51,7 @@
   --color-foreground: var(--text-primary);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-luxury: var(--font-luxury);
 }
 
 * {
