@@ -13,7 +13,7 @@ function extractJSON(text: string): string {
 
 const DRIVE_CATEGORIES = ["best-of-viva", "before-after", "pavers", "turf", "pergolas", "softscape", "lighting", "drone", "landscape", "spotlights", "google-business"];
 
-const TEMPLATE_IDS = ["cinematic-gold", "warm-editorial", "dark-luxury", "bold-center", "bold-diagonal", "bold-statement", "clean-bar", "clean-side", "whisper", "magazine-cover", "photo-journal", "editorial-grid", "promo-banner", "promo-split", "promo-stripe", "question-frosted", "engagement-pop", "poll-card", "story-spotlight", "story-vignette", "story-cinematic", "project-card", "showcase-sweep"];
+const TEMPLATE_IDS = ["viva-classic", "earth-warm", "dark-forest", "bold-center", "bold-top", "clean-bar", "side-panel", "cinematic", "frosted", "promo-stripe", "whisper", "viva-earth"];
 
 export async function POST(req: NextRequest) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -39,11 +39,18 @@ REGLAS DE COPY:
 - ctaText: 2-3 palabras
 
 REGLAS DE DIRECCION ARTISTICA:
-- Elige un template Y genera variaciones visuales UNICAS para este post
-- Los numeros de filtro deben variar cada vez — NUNCA uses los mismos valores
-- PALETA VIVA: el accentColor principal es #7ab82e (verde lima Viva). Alternativas: #3c4a30 (verde oscuro), #795220 (tierra), #e3e3d2 (crema), #4d6340 (verde medio). Para promos urgentes puedes usar #e11d48. Para agua/piscinas #0ea5e9. SIEMPRE prioriza los verdes Viva.
-- Varia los angulos de gradiente, la intensidad del contraste, la saturacion
-- Cada post debe sentirse diferente visualmente
+- Elige un template Y genera variaciones visuales UNICAS
+- PALETA OBLIGATORIA — accentColor DEBE ser uno de estos EXACTOS:
+  "#7ab82e" (verde lima Viva — default, usar en 60% de posts)
+  "#3c4a30" (verde oscuro)
+  "#4d6340" (verde medio)
+  "#8fd440" (verde claro)
+  "#795220" (tierra)
+  "#a07a40" (tierra claro)
+  "#e3e3d2" (crema)
+  NINGUN otro color esta permitido. NO uses azules, rojos, morados, naranjas.
+- headlineColor SIEMPRE "#ffffff"
+- Varia filtros ligeramente cada vez pero dentro de rangos conservadores
 
 Responde UNICAMENTE con JSON puro.
 
